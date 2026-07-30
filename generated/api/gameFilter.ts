@@ -6,10 +6,9 @@
  * OpenAPI spec version: 1.0
  */
 
-export type GameFilter = typeof GameFilter[keyof typeof GameFilter];
-
+export type GameFilter = (typeof GameFilter)[keyof typeof GameFilter];
 
 export const GameFilter = {
-  dlc: 'dlc',
-  discount: 'discount',
+  dlc: "dlc",
+  discount: "discount",
 } as const;

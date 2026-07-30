@@ -5,29 +5,29 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { GameFilter } from './gameFilter';
-import type { GameGenre } from './gameGenre';
-import type { GameView } from './gameView';
+import type { GameFilter } from "./gameFilter";
+import type { GameGenre } from "./gameGenre";
+import type { GameView } from "./gameView";
 
 export type GamesControllerGetGamesParams = {
-/**
- * Дополнительные фильтры
- */
-filter?: GameFilter[];
-/**
- * Предустановленный вид выборки
- */
-view?: GameView;
-/**
- * Жанр
- */
-genre?: GameGenre[];
-/**
- * Страница
- */
-page?: number;
-/**
- * Лимит
- */
-limit?: number;
+  /**
+   * Дополнительные фильтры
+   */
+  filter?: GameFilter[];
+  /**
+   * Предустановленный вид выборки
+   */
+  view?: GameView;
+  /**
+   * Жанр
+   */
+  genre?: GameGenre[];
+  /**
+   * Страница
+   */
+  page?: number;
+  /**
+   * Лимит
+   */
+  limit?: number;
 };

@@ -1,6 +1,100 @@
 openapi: 3.0.0
 paths:
-  /api/auth/otp:
+  /api/auth/sign-in:
+    post:
+      operationId: AuthController_signIn
+      parameters:
+        - name: x-application
+          in: header
+          required: false
+          schema:
+            type: string
+            example: web
+            enum:
+              - web
+              - mobile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SignInDto"
+      responses:
+        "200":
+          description: sign-in
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SignInResponse"
+      summary: Войти
+      tags:
+        - 🔒 auth
+  /api/auth/sign-out:
+    post:
+      operationId: AuthController_signOut
+      parameters:
+        - name: x-application
+          in: header
+          required: false
+          schema:
+            type: string
+            example: web
+            enum:
+              - web
+              - mobile
+      responses:
+        "200":
+          description: sign-out
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BaseResponse"
+      security:
+        - mobile-auth: []
+        - web-auth: []
+      summary: Выйти
+      tags:
+        - 🔒 auth
+  /api/users/profile:
+    patch:
+      operationId: UsersController_updateProfile
+      parameters: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateProfileDto"
+      responses:
+        "200":
+          description: update profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpdateProfileResponse"
+      security:
+        - mobile-auth: []
+        - web-auth: []
+      summary: Обновить профиль пользователя
+      tags:
+        - 💂‍♂️ users
+    get:
+      operationId: UsersController_getProfile
+      parameters: []
+      responses:
+        "200":
+          description: get profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetProfileResponse"
+      security:
+        - mobile-auth: []
+        - web-auth: []
+      summary: Получить профиль пользователя
+      tags:
+        - 💂‍♂️ users
+  /api/otps/otp:
     post:
       operationId: OtpsController_createOtp
       parameters: []
@@ -16,76 +110,68 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/OtpResponse"
+                $ref: "#/components/schemas/CreateOtpResponse"
       summary: Создание отп кода
       tags:
-        - ☄️ otps
-  /api/users/signin:
+        - 🔑 otps
+  /api/transactions/{id}:
+    get:
+      operationId: TransactionsController_getTransaction
+      parameters:
+        - name: id
+          required: true
+          in: path
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Получить транзакцию по ID
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GetTransactionResponse"
+      summary: Получить транзакцию по ID
+      tags:
+        - 💸 transactions
+  /api/transactions/pay:
     post:
-      operationId: UsersController_signin
+      operationId: TransactionsController_payTransaction
       parameters: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/SignInDto"
+              $ref: "#/components/schemas/PayTransactionDto"
       responses:
         "200":
-          description: signin
+          description: "Оплата транзакции: новая карта / сохранённая карта"
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SignInResponse"
-      summary: Авторизация
+                $ref: "#/components/schemas/PayTransactionResponse"
+      summary: Оплатить (закрыть) транзакцию картой
       tags:
-        - 💂‍♂️ users
-  /api/users/profile:
-    patch:
-      operationId: UsersController_updateProfile
+        - 💸 transactions
+  /api/transactions/{id}/pay/qr:
+    post:
+      operationId: TransactionsController_payTransactionByQr
       parameters:
-        - name: authorization
-          in: header
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: "#/components/schemas/UpdateProfileDto"
-      responses:
-        "200":
-          description: update profile
-          content:
-            application/json:
-              schema:
-                $ref: "#/components/schemas/UpdateProfileResponse"
-      security:
-        - bearer: []
-      summary: Обновить профиль пользователя
-      tags:
-        - 💂‍♂️ users
-  /api/users/session:
-    get:
-      operationId: UsersController_session
-      parameters:
-        - name: authorization
-          in: header
+        - name: id
+          required: true
+          in: path
           schema:
             type: string
       responses:
         "200":
-          description: session
+          description: Оплата транзакции по QR
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/SessionResponse"
-      security:
-        - bearer: []
-      summary: Получить сессию пользователя
+                $ref: "#/components/schemas/PayTransactionResponse"
+      summary: Оплатить транзакцию по QR
       tags:
-        - 💂‍♂️ users
+        - 💸 transactions
   /api/games/info:
     get:
       operationId: GamesController_getGames
@@ -185,7 +271,7 @@ paths:
         - 🎮 games
   /api/games/regions:
     get:
-      operationId: GamesController_getRegions
+      operationId: GamesController_getGameRegions
       parameters:
         - name: slug
           required: true
@@ -198,14 +284,14 @@ paths:
           in: query
           description: Тип доставки
           schema:
-            $ref: "#/components/schemas/DeliveryType"
+            $ref: "#/components/schemas/GameDeliveryType"
       responses:
         "200":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RegionsResponse"
+                $ref: "#/components/schemas/GameRegionsResponse"
       summary: Получить регионы
       tags:
         - 🎮 games
@@ -224,20 +310,20 @@ paths:
           in: query
           description: Тип доставки
           schema:
-            $ref: "#/components/schemas/DeliveryType"
+            $ref: "#/components/schemas/GameDeliveryType"
         - name: region
           required: true
           in: query
           description: Регион
           schema:
-            $ref: "#/components/schemas/Region"
+            $ref: "#/components/schemas/GameRegion"
       responses:
         "200":
           description: ""
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/PriceVariantsResponse"
+                $ref: "#/components/schemas/GamePriceVariantsResponse"
       summary: Получить варианты цен
       tags:
         - 🎮 games
@@ -258,17 +344,13 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/CreateGameOrderResponse"
-      summary: Купить игру и получить ключ
+      summary: Создать заказ игры и транзакцию для оплаты
       tags:
         - 🎮 games
   /api/games/orders:
     get:
       operationId: GamesController_getGameOrders
-      parameters:
-        - name: authorization
-          in: header
-          schema:
-            type: string
+      parameters: []
       responses:
         "200":
           description: ""
@@ -277,8 +359,30 @@ paths:
               schema:
                 $ref: "#/components/schemas/GameOrdersResponse"
       security:
-        - bearer: []
+        - mobile-auth: []
+        - web-auth: []
       summary: Получить все заказы игр
+      tags:
+        - 🎮 games
+  /api/games/orders/paid:
+    get:
+      operationId: GamesController_getGamePaidOrder
+      parameters:
+        - name: token
+          required: true
+          in: query
+          description: Одноразовый токен доступа
+          schema:
+            example: 1f2e3d4c5b6a7980abcdef1234567890abcdef1234567890abcdef1234567890
+            type: string
+      responses:
+        "200":
+          description: ""
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GameOrderResponse"
+      summary: Получить оплаченный заказ игры по одноразовому токену
       tags:
         - 🎮 games
   /api/games/orders/{orderId}:
@@ -291,10 +395,6 @@ paths:
           description: ID заказа
           schema:
             type: string
-        - name: authorization
-          in: header
-          schema:
-            type: string
       responses:
         "200":
           description: ""
@@ -303,7 +403,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/GameOrderResponse"
       security:
-        - bearer: []
+        - mobile-auth: []
+        - web-auth: []
       summary: Получить заказ игры
       tags:
         - 🎮 games
@@ -313,49 +414,29 @@ info:
   version: "1.0"
   contact: {}
 tags: []
-servers:
-  - url: ""
+servers: []
 components:
   securitySchemes:
-    bearer:
+    mobile-auth:
       scheme: bearer
-      bearerFormat: JWT
+      bearerFormat: Session  token
       type: http
+      description: "Для x-application: mobile"
+    web-auth:
+      type: apiKey
+      in: cookie
+      name: session_token
+      description: "Для x-application: web"
   schemas:
-    CreateOtpDto:
-      type: object
-      properties:
-        phone:
-          type: string
-          example: "89990009999"
-      required:
-        - phone
-    OtpResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Статус запроса
-        reason:
-          type: string
-          description: Причина ошибки
-        retryDelay:
-          type: number
-          example: 120000
-          description: Время запроса повторного отп кода в мс
-      required:
-        - success
-        - retryDelay
     SignInDto:
       type: object
       properties:
         phone:
           type: string
-          example: "89990009999"
           description: Номер телефона
+          example: "89990009999"
         code:
           type: number
-          example: 345231
           description: Отп код
       required:
         - phone
@@ -368,28 +449,28 @@ components:
           description: ID пользователя
         phone:
           type: string
-          example: "89990009999"
           description: Номер телефона
+          example: "89990009999"
         firstname:
           type: string
-          example: firstname
           description: Имя
+          example: Иван
         middlename:
           type: string
-          example: middlename
           description: Отчество
+          example: Иванович
         lastname:
           type: string
-          example: lastname
           description: Фамилия
+          example: Иванов
         email:
           type: string
-          example: email@gmail.com
           description: Почта
+          example: example.email@gmail.com
         city:
           type: string
-          example: city
           description: Город
+          example: Москва
       required:
         - _id
         - phone
@@ -402,54 +483,51 @@ components:
         reason:
           type: string
           description: Причина ошибки
+        token:
+          type: string
+          description: Токен сессии
         user:
           description: Пользователь
           allOf:
             - $ref: "#/components/schemas/User"
-        token:
-          type: string
-          description: Пользовательский токен
       required:
         - success
-        - user
         - token
-    UpdateProfileProfileDto:
+        - user
+    BaseResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Статус запроса
+        reason:
+          type: string
+          description: Причина ошибки
+      required:
+        - success
+    UpdateProfileDto:
       type: object
       properties:
         firstname:
           type: string
-          example: firstname
           description: Имя
+          example: Иван
         middlename:
           type: string
-          example: middlename
           description: Отчество
+          example: Иванович
         lastname:
           type: string
-          example: lastname
           description: Фамилия
+          example: Иванов
         email:
           type: string
-          example: email@gmail.com
           description: Почта
+          example: example.email@gmail.com
         city:
           type: string
-          example: city
           description: Город
-    UpdateProfileDto:
-      type: object
-      properties:
-        profile:
-          description: Данные пользователя
-          allOf:
-            - $ref: "#/components/schemas/UpdateProfileProfileDto"
-        phone:
-          type: string
-          example: "89990009999"
-          description: Номер телефона
-      required:
-        - profile
-        - phone
+          example: Москва
     UpdateProfileResponse:
       type: object
       properties:
@@ -466,7 +544,7 @@ components:
       required:
         - success
         - user
-    SessionResponse:
+    GetProfileResponse:
       type: object
       properties:
         success:
@@ -482,6 +560,173 @@ components:
       required:
         - success
         - user
+    CreateOtpDto:
+      type: object
+      properties:
+        phone:
+          type: string
+          description: Номер телефона
+          example: "89990009999"
+      required:
+        - phone
+    CreateOtpResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Статус запроса
+        reason:
+          type: string
+          description: Причина ошибки
+        retryDelay:
+          type: number
+          description: Время запроса повторного отп кода в мс
+          example: 120000
+      required:
+        - success
+        - retryDelay
+    TransactionOrderType:
+      type: string
+      enum:
+        - car
+        - delivery
+        - pizza
+        - cinema
+        - game
+      description: Тип заказа, связанного с транзакцией
+    TransactionStatus:
+      type: string
+      enum:
+        - pending
+        - paid
+        - failed
+    Transaction:
+      type: object
+      properties:
+        _id:
+          type: string
+          description: ID транзакции
+        phone:
+          type: string
+          description: Телефон владельца транзакции
+          example: "89990009999"
+        orderId:
+          type: string
+          description: ID заказа, связанного с транзакцией
+          nullable: true
+        orderType:
+          description: Тип заказа, связанного с транзакцией
+          allOf:
+            - $ref: "#/components/schemas/TransactionOrderType"
+        amount:
+          type: number
+          description: Сумма транзакции
+          example: 1290
+        currency:
+          type: string
+          description: Валюта транзакции
+          example: RUB
+        status:
+          allOf:
+            - $ref: "#/components/schemas/TransactionStatus"
+        expiresAt:
+          format: date-time
+          type: string
+          description: Время истечения транзакции (createdAt + 10 мин)
+        createdAt:
+          format: date-time
+          type: string
+          description: Дата создания
+        cardCryptoPacket:
+          type: string
+          description: Крипто-пакет карты в base64-формате
+          nullable: true
+        paidAt:
+          format: date-time
+          type: string
+          description: Дата оплаты
+          nullable: true
+        accessToken:
+          type: string
+          description: Токен доступа к транзакции
+          nullable: true
+      required:
+        - _id
+        - phone
+        - orderType
+        - amount
+        - currency
+        - status
+        - expiresAt
+    GetTransactionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Статус запроса
+        reason:
+          type: string
+          description: Причина ошибки
+        transaction:
+          description: Транзакция
+          allOf:
+            - $ref: "#/components/schemas/Transaction"
+      required:
+        - success
+        - transaction
+    TransactionPayMethod:
+      type: string
+      enum:
+        - new_card
+        - saved_card
+        - qr
+      description: Способ оплаты
+    PayTransactionDto:
+      type: object
+      properties:
+        transactionId:
+          type: string
+          description: ID транзакции
+        method:
+          description: Способ оплаты
+          example: new_card
+          allOf:
+            - $ref: "#/components/schemas/TransactionPayMethod"
+        pan:
+          type: string
+          description: Номер карты (новая карта)
+        expireDate:
+          type: string
+          description: Срок действия (новая карта)
+        cardId:
+          type: string
+          description: ID сохранённой карты
+        cvv:
+          type: string
+          description: CVV (любой символ — фикция)
+        saveCard:
+          type: boolean
+          description: Сохранить новую карту
+          default: true
+      required:
+        - transactionId
+        - method
+    PayTransactionResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Статус запроса
+        reason:
+          type: string
+          description: Причина ошибки
+        transaction:
+          description: Оплаченная транзакция
+          allOf:
+            - $ref: "#/components/schemas/Transaction"
+      required:
+        - success
+        - transaction
     GameFilter:
       type: string
       enum:
@@ -512,7 +757,7 @@ components:
         - game
         - dlc
       description: Тип
-    Region:
+    GameRegion:
       type: string
       enum:
         - ru
@@ -525,7 +770,7 @@ components:
         - europe
         - asia
       description: Регион
-    DeliveryType:
+    GameDeliveryType:
       type: string
       enum:
         - steam_key
@@ -535,72 +780,72 @@ components:
         - xbox_key
         - playstation_key
       description: Способ получения
-    PriceVariant:
+    GamePriceVariant:
       type: object
       properties:
         region:
-          example: europe
           description: Регион
+          example: europe
           allOf:
-            - $ref: "#/components/schemas/Region"
+            - $ref: "#/components/schemas/GameRegion"
         price:
           type: number
-          example: 968
           description: Текущая цена
+          example: 968
         oldPrice:
           type: number
-          example: 2688
           description: Старая цена
+          example: 2688
         deliveryType:
-          example: steam_key
           description: Способ получения
+          example: steam_key
           allOf:
-            - $ref: "#/components/schemas/DeliveryType"
+            - $ref: "#/components/schemas/GameDeliveryType"
         edition:
           type: string
-          example: Deluxe
           description: Издание
+          example: Deluxe
       required:
         - region
         - price
         - deliveryType
         - edition
-    FilteredGame:
+    GameFiltered:
       type: object
       properties:
         slug:
           type: string
-          example: battlefield-2042
           description: Slug игры
+          example: battlefield-2042
         name:
           type: string
-          example: Battlefield 2042
           description: Название игры
+          example: Battlefield 2042
         releaseDate:
           type: number
-          example: 1637280000
           description: Дата релиза
+          example: 1637280000
         type:
-          example: game
           description: Тип
+          example: game
           allOf:
             - $ref: "#/components/schemas/GameType"
         genres:
           type: array
+          description: Жанры игры
           example:
             - action
             - rpg
-          description: Жанры игры
           items:
             $ref: "#/components/schemas/GameGenre"
         image:
           type: string
-          example: /static/images/games/cs2.webp
           description: Изображение игры
+          example: /static/images/games/cs2.webp
         priceVariant:
           description: Наименьший вариант цены
           allOf:
-            - $ref: "#/components/schemas/PriceVariant"
+            - $ref: "#/components/schemas/GamePriceVariant"
       required:
         - slug
         - name
@@ -609,25 +854,25 @@ components:
         - genres
         - image
         - priceVariant
-    GamesPaginationMeta:
+    GamePaginationMeta:
       type: object
       properties:
         total:
           type: number
-          example: 30
           description: Общее количество элементов
+          example: 30
         page:
           type: number
-          example: 1
           description: Текущая страница
+          example: 1
         limit:
           type: number
-          example: 10
           description: Элементов на странице
+          example: 10
         totalPages:
           type: number
-          example: 3
           description: Количество страниц
+          example: 3
       required:
         - total
         - page
@@ -646,11 +891,11 @@ components:
           description: Список игр
           type: array
           items:
-            $ref: "#/components/schemas/FilteredGame"
+            $ref: "#/components/schemas/GameFiltered"
         meta:
           description: Пагинация
           allOf:
-            - $ref: "#/components/schemas/GamesPaginationMeta"
+            - $ref: "#/components/schemas/GamePaginationMeta"
       required:
         - success
         - games
@@ -668,102 +913,102 @@ components:
           description: Результаты поиска игр
           type: array
           items:
-            $ref: "#/components/schemas/FilteredGame"
+            $ref: "#/components/schemas/GameFiltered"
       required:
         - success
         - games
-    SystemRequirements:
+    GameSystemRequirements:
       type: object
       properties:
         oc:
           type: string
-          example: Windows 10
           description: Операционная система
+          example: Windows 10
         processor:
           type: string
-          example: Intel Core i5-9400F
           description: Процессор
+          example: Intel Core i5-9400F
         memory:
           type: string
-          example: 16 GB
           description: Оперативная память
+          example: 16 GB
         graphics:
           type: string
-          example: NVIDIA GeForce GTX 1660
           description: Видеокарта
+          example: NVIDIA GeForce GTX 1660
         storage:
           type: string
-          example: 500 GB
           description: Место на диске
-    DetailedGame:
+          example: 500 GB
+    GameDetailed:
       type: object
       properties:
         slug:
           type: string
-          example: battlefield-2042
           description: Slug игры
+          example: battlefield-2042
         name:
           type: string
-          example: Battlefield 2042
           description: Название игры
+          example: Battlefield 2042
         releaseDate:
           type: number
-          example: 1637280000
           description: Дата релиза
+          example: 1637280000
         type:
-          example: game
           description: Тип
+          example: game
           allOf:
             - $ref: "#/components/schemas/GameType"
         genres:
           type: array
+          description: Жанры игры
           example:
             - action
             - rpg
-          description: Жанры игры
           items:
             $ref: "#/components/schemas/GameGenre"
         image:
           type: string
-          example: /static/images/games/cs2.webp
           description: Изображение игры
+          example: /static/images/games/cs2.webp
         deliveryTypes:
           type: array
+          description: Способ получения
           example:
             - steam_key
             - xbox_key
             - steam_gift
-          description: Способ получения
           items:
-            $ref: "#/components/schemas/DeliveryType"
+            $ref: "#/components/schemas/GameDeliveryType"
         description:
           type: string
-          example: Онлайн-шутер с масштабными сражениями.
           description: Описание игры
+          example: Онлайн-шутер с масштабными сражениями.
         minimumSystemRequirements:
           description: Минимальные системные требования
           allOf:
-            - $ref: "#/components/schemas/SystemRequirements"
+            - $ref: "#/components/schemas/GameSystemRequirements"
         recommendedSystemRequirements:
           description: Рекомендуемые системные требования
           allOf:
-            - $ref: "#/components/schemas/SystemRequirements"
+            - $ref: "#/components/schemas/GameSystemRequirements"
         developer:
           type: string
-          example: EA Games
           description: Разработчик
+          example: EA Games
         publisher:
           type: string
-          example: Electronic Arts
           description: Издатель
+          example: Electronic Arts
         externalId:
           type: string
-          example: "1517290"
           description: Внешний ID (Steam/KupiKod)
+          example: "1517290"
         screenshots:
+          description: Скриншоты игры
           example:
             - /static/images/games/cs2.webp
-          description: Скриншоты игры
           type: array
           items:
             type: string
@@ -794,11 +1039,11 @@ components:
         game:
           description: Игра
           allOf:
-            - $ref: "#/components/schemas/DetailedGame"
+            - $ref: "#/components/schemas/GameDetailed"
       required:
         - success
         - game
-    RegionsResponse:
+    GameRegionsResponse:
       type: object
       properties:
         success:
@@ -811,11 +1056,11 @@ components:
           type: array
           description: Доступные регионы
           items:
-            $ref: "#/components/schemas/Region"
+            $ref: "#/components/schemas/GameRegion"
       required:
         - success
         - regions
-    PriceVariantsResponse:
+    GamePriceVariantsResponse:
       type: object
       properties:
         success:
@@ -828,7 +1073,7 @@ components:
           description: Варианты цен для изданий
           type: array
           items:
-            $ref: "#/components/schemas/PriceVariant"
+            $ref: "#/components/schemas/GamePriceVariant"
       required:
         - success
         - priceVariants
@@ -837,16 +1082,16 @@ components:
       properties:
         phone:
           type: string
-          example: "79990001122"
           description: Телефон пользователя
+          example: "79990001122"
         email:
           type: string
-          example: example@mail.com
           description: Email пользователя
+          example: example@mail.com
         inviteLink:
           type: string
-          example: https://s.team/p/
           description: Ссылка на приглашение
+          example: https://s.team/p/
       required:
         - phone
         - email
@@ -855,118 +1100,121 @@ components:
       properties:
         gameSlug:
           type: string
-          example: battlefield-2042
           description: Slug игры
+          example: battlefield-2042
         deliveryType:
           description: Тип доставки
           example: steam_gift
           allOf:
-            - $ref: "#/components/schemas/DeliveryType"
+            - $ref: "#/components/schemas/GameDeliveryType"
         region:
           description: Регион
           example: ru
           allOf:
-            - $ref: "#/components/schemas/Region"
+            - $ref: "#/components/schemas/GameRegion"
         edition:
           type: string
-          example: Deluxe
           description: Издание
+          example: Deluxe
         person:
           description: Данные покупателя
           allOf:
             - $ref: "#/components/schemas/CreateGameOrderPersonDto"
-        debitCard:
-          type: string
-          example: 2202 2063 8908 5954
-          description: Дебетовая карта для оплаты
       required:
         - gameSlug
         - deliveryType
         - region
         - edition
         - person
-        - debitCard
     GameOrderPerson:
       type: object
       properties:
         phone:
           type: string
-          example: "79990001122"
           description: Телефон
+          example: "79990001122"
         email:
           type: string
-          example: user@mail.com
           description: Email
+          example: user@mail.com
         inviteLink:
           type: string
-          example: https://example.com/invite
           description: Ссылка на приглашение
+          example: https://example.com/invite
       required:
         - phone
         - email
-    GameOrderSnapshot:
-      type: object
-      properties:
-        slug:
-          type: string
-          example: battlefield-2042
-          description: Slug игры
-        name:
-          type: string
-          example: Battlefield 2042
-          description: Название игры
-        image:
-          type: string
-          example: /static/images/pizza/1.webp
-          description: Картинка игры
-        region:
-          example: europe
-          description: Регион
-          allOf:
-            - $ref: "#/components/schemas/Region"
-        price:
-          type: number
-          example: 968
-          description: Текущая цена
-        deliveryType:
-          example: steam_key
-          description: Способ получения
-          allOf:
-            - $ref: "#/components/schemas/DeliveryType"
-        edition:
-          type: string
-          example: Deluxe
-          description: Издание
-      required:
-        - slug
-        - name
-        - image
-        - region
-        - price
-        - deliveryType
-        - edition
+    GameOrderStatus:
+      type: string
+      enum:
+        - awaiting_payment
+        - paid
+      description: Статус заказа
     GameOrder:
       type: object
       properties:
         _id:
           type: string
           description: ID заказа
+        createdAt:
+          format: date-time
+          type: string
+          description: Дата создания заказа
+        updatedAt:
+          format: date-time
+          type: string
+          description: Дата обновления заказа
         person:
           description: Данные покупателя
           allOf:
             - $ref: "#/components/schemas/GameOrderPerson"
-        gameSnapshot:
-          description: Снимок игры на момент заказа
-          allOf:
-            - $ref: "#/components/schemas/GameOrderSnapshot"
-        gameKey:
+        gameSlug:
           type: string
+          description: Slug игры
+          example: battlefield-2042
+        region:
+          description: Регион
+          example: europe
+          allOf:
+            - $ref: "#/components/schemas/GameRegion"
+        price:
+          type: number
+          description: Цена заказа
+          example: 968
+        deliveryType:
+          description: Способ получения
+          example: steam_key
+          allOf:
+            - $ref: "#/components/schemas/GameDeliveryType"
+        edition:
+          type: string
+          description: Издание
+          example: Deluxe
+        status:
+          description: Статус заказа
+          example: awaiting_payment
+          allOf:
+            - $ref: "#/components/schemas/GameOrderStatus"
+        gameKey:
+          type: object
+          description: Сгенерированный игровой ключ (выдаётся после оплаты)
           example: XXXX-YYYY-ZZZZ
-          description: Сгенерированный игровой ключ
+        transactionId:
+          type: string
+          description: ID связанной транзакции
+          nullable: true
       required:
         - _id
+        - createdAt
+        - updatedAt
         - person
-        - gameSnapshot
+        - gameSlug
+        - region
+        - price
+        - deliveryType
+        - edition
+        - status
+        - transactionId
     CreateGameOrderResponse:
       type: object
       properties:
@@ -977,12 +1225,17 @@ components:
           type: string
           description: Причина ошибки
         order:
-          description: Заказ на игру
+          description: Заказ на игру (ожидает оплаты)
           allOf:
             - $ref: "#/components/schemas/GameOrder"
+        transaction:
+          description: Транзакция для оплаты
+          allOf:
+            - $ref: "#/components/schemas/Transaction"
       required:
         - success
         - order
+        - transaction
     GameOrdersResponse:
       type: object
       properties:

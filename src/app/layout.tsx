@@ -1,14 +1,22 @@
 import "./globals.css";
 
 import type { Metadata } from "next";
+import { Nunito } from "next/font/google";
 import type { ReactNode } from "react";
 
-import { Toaster } from "@/components/ui/toaster";
+import { Toaster } from "@/components/ui/Toaster";
 import { intl } from "@/i18n/server";
+import { cn } from "@/lib/tailwind";
 
+import { Footer } from "./_components/Footer";
 import { Header } from "./_components/Header";
 import { ThemeScript } from "./_scripts/theme";
 import { Providers } from "./providers";
+
+const nunito = Nunito({
+  variable: "--font-nunito",
+  subsets: ["latin", "cyrillic"],
+});
 
 export const metadata: Metadata = {
   title: "JB market",
@@ -21,7 +29,12 @@ interface RootLayoutProps {
 
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
-    <html suppressHydrationWarning lang={intl.locale}>
+    <html
+      suppressHydrationWarning
+      lang={intl.locale}
+      className={cn(nunito.variable)}
+      data-scroll-behavior="smooth"
+    >
       <head>
         <ThemeScript />
       </head>
@@ -30,6 +43,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <div className="content-container">
             <Header />
             <div className="flex flex-1 flex-col">{children}</div>
+            <Footer />
           </div>
         </Providers>
         <Toaster />

@@ -7,12 +7,12 @@
  */
 
 export type GamesControllerSearchGamesParams = {
-/**
- * Строка поиска
- */
-search: string;
-/**
- * Лимит
- */
-limit?: number;
+  /**
+   * Строка поиска
+   */
+  search: string;
+  /**
+   * Лимит
+   */
+  limit?: number;
 };

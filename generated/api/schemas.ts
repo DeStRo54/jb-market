@@ -5,350 +5,955 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import * as zod from 'zod';
+import * as zod from "zod";
 
+/**
+ * @summary Войти
+ */
+export const AuthControllerSignInHeader = zod.object({
+  "x-application": zod.enum(["web", "mobile"]).optional(),
+});
+
+export const AuthControllerSignInBody = zod.object({
+  phone: zod.string().describe("Номер телефона"),
+  code: zod.number().describe("Отп код"),
+});
+
+export const AuthControllerSignInResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  token: zod.string().describe("Токен сессии"),
+  user: zod
+    .object({
+      _id: zod.string().describe("ID пользователя"),
+      phone: zod.string().describe("Номер телефона"),
+      firstname: zod.string().optional().describe("Имя"),
+      middlename: zod.string().optional().describe("Отчество"),
+      lastname: zod.string().optional().describe("Фамилия"),
+      email: zod.string().optional().describe("Почта"),
+      city: zod.string().optional().describe("Город"),
+    })
+    .describe("Пользователь"),
+});
+
+/**
+ * @summary Выйти
+ */
+export const AuthControllerSignOutHeader = zod.object({
+  "x-application": zod.enum(["web", "mobile"]).optional(),
+});
+
+export const AuthControllerSignOutResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+});
+
+/**
+ * @summary Обновить профиль пользователя
+ */
+export const UsersControllerUpdateProfileBody = zod.object({
+  firstname: zod.string().optional().describe("Имя"),
+  middlename: zod.string().optional().describe("Отчество"),
+  lastname: zod.string().optional().describe("Фамилия"),
+  email: zod.string().optional().describe("Почта"),
+  city: zod.string().optional().describe("Город"),
+});
+
+export const UsersControllerUpdateProfileResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  user: zod
+    .object({
+      _id: zod.string().describe("ID пользователя"),
+      phone: zod.string().describe("Номер телефона"),
+      firstname: zod.string().optional().describe("Имя"),
+      middlename: zod.string().optional().describe("Отчество"),
+      lastname: zod.string().optional().describe("Фамилия"),
+      email: zod.string().optional().describe("Почта"),
+      city: zod.string().optional().describe("Город"),
+    })
+    .describe("Пользователь"),
+});
+
+/**
+ * @summary Получить профиль пользователя
+ */
+export const UsersControllerGetProfileResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  user: zod
+    .object({
+      _id: zod.string().describe("ID пользователя"),
+      phone: zod.string().describe("Номер телефона"),
+      firstname: zod.string().optional().describe("Имя"),
+      middlename: zod.string().optional().describe("Отчество"),
+      lastname: zod.string().optional().describe("Фамилия"),
+      email: zod.string().optional().describe("Почта"),
+      city: zod.string().optional().describe("Город"),
+    })
+    .describe("Пользователь"),
+});
 
 /**
  * @summary Создание отп кода
  */
 export const OtpsControllerCreateOtpBody = zod.object({
-  "phone": zod.string()
-})
+  phone: zod.string().describe("Номер телефона"),
+});
 
 export const OtpsControllerCreateOtpResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "retryDelay": zod.number().describe('Время запроса повторного отп кода в мс')
-})
-
-
-/**
- * @summary Авторизация
- */
-export const UsersControllerSigninBody = zod.object({
-  "phone": zod.string().describe('Номер телефона'),
-  "code": zod.number().describe('Отп код')
-})
-
-export const UsersControllerSigninResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "user": zod.object({
-  "_id": zod.string().describe('ID пользователя'),
-  "phone": zod.string().describe('Номер телефона'),
-  "firstname": zod.string().optional().describe('Имя'),
-  "middlename": zod.string().optional().describe('Отчество'),
-  "lastname": zod.string().optional().describe('Фамилия'),
-  "email": zod.string().optional().describe('Почта'),
-  "city": zod.string().optional().describe('Город')
-}).describe('Пользователь'),
-  "token": zod.string().describe('Пользовательский токен')
-})
-
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  retryDelay: zod.number().describe("Время запроса повторного отп кода в мс"),
+});
 
 /**
- * @summary Обновить профиль пользователя
+ * @summary Получить транзакцию по ID
  */
-export const UsersControllerUpdateProfileHeader = zod.object({
-  "authorization": zod.string().optional()
-})
+export const TransactionsControllerGetTransactionParams = zod.object({
+  id: zod.string(),
+});
 
-export const UsersControllerUpdateProfileBody = zod.object({
-  "profile": zod.object({
-  "firstname": zod.string().optional().describe('Имя'),
-  "middlename": zod.string().optional().describe('Отчество'),
-  "lastname": zod.string().optional().describe('Фамилия'),
-  "email": zod.string().optional().describe('Почта'),
-  "city": zod.string().optional().describe('Город')
-}).describe('Данные пользователя'),
-  "phone": zod.string().describe('Номер телефона')
-})
-
-export const UsersControllerUpdateProfileResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "user": zod.object({
-  "_id": zod.string().describe('ID пользователя'),
-  "phone": zod.string().describe('Номер телефона'),
-  "firstname": zod.string().optional().describe('Имя'),
-  "middlename": zod.string().optional().describe('Отчество'),
-  "lastname": zod.string().optional().describe('Фамилия'),
-  "email": zod.string().optional().describe('Почта'),
-  "city": zod.string().optional().describe('Город')
-}).describe('Пользователь')
-})
-
+export const TransactionsControllerGetTransactionResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  transaction: zod
+    .object({
+      _id: zod.string().describe("ID транзакции"),
+      phone: zod.string().describe("Телефон владельца транзакции"),
+      orderId: zod
+        .string()
+        .nullish()
+        .describe("ID заказа, связанного с транзакцией"),
+      orderType: zod
+        .enum(["car", "delivery", "pizza", "cinema", "game"])
+        .describe("Тип заказа, связанного с транзакцией")
+        .describe("Тип заказа, связанного с транзакцией"),
+      amount: zod.number().describe("Сумма транзакции"),
+      currency: zod.string().describe("Валюта транзакции"),
+      status: zod.enum(["pending", "paid", "failed"]),
+      expiresAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Время истечения транзакции (createdAt + 10 мин)"),
+      createdAt: zod.iso
+        .datetime({ offset: true })
+        .optional()
+        .describe("Дата создания"),
+      cardCryptoPacket: zod
+        .string()
+        .nullish()
+        .describe("Крипто-пакет карты в base64-формате"),
+      paidAt: zod.iso
+        .datetime({ offset: true })
+        .nullish()
+        .describe("Дата оплаты"),
+      accessToken: zod
+        .string()
+        .nullish()
+        .describe("Токен доступа к транзакции"),
+    })
+    .describe("Транзакция"),
+});
 
 /**
- * @summary Получить сессию пользователя
+ * @summary Оплатить (закрыть) транзакцию картой
  */
-export const UsersControllerSessionHeader = zod.object({
-  "authorization": zod.string().optional()
-})
+export const transactionsControllerPayTransactionBodySaveCardDefault = true;
 
-export const UsersControllerSessionResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "user": zod.object({
-  "_id": zod.string().describe('ID пользователя'),
-  "phone": zod.string().describe('Номер телефона'),
-  "firstname": zod.string().optional().describe('Имя'),
-  "middlename": zod.string().optional().describe('Отчество'),
-  "lastname": zod.string().optional().describe('Фамилия'),
-  "email": zod.string().optional().describe('Почта'),
-  "city": zod.string().optional().describe('Город')
-}).describe('Пользователь')
-})
+export const TransactionsControllerPayTransactionBody = zod.object({
+  transactionId: zod.string().describe("ID транзакции"),
+  method: zod
+    .enum(["new_card", "saved_card", "qr"])
+    .describe("Способ оплаты")
+    .describe("Способ оплаты"),
+  pan: zod.string().optional().describe("Номер карты (новая карта)"),
+  expireDate: zod.string().optional().describe("Срок действия (новая карта)"),
+  cardId: zod.string().optional().describe("ID сохранённой карты"),
+  cvv: zod.string().optional().describe("CVV (любой символ — фикция)"),
+  saveCard: zod
+    .boolean()
+    .default(transactionsControllerPayTransactionBodySaveCardDefault)
+    .describe("Сохранить новую карту"),
+});
 
+export const TransactionsControllerPayTransactionResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  transaction: zod
+    .object({
+      _id: zod.string().describe("ID транзакции"),
+      phone: zod.string().describe("Телефон владельца транзакции"),
+      orderId: zod
+        .string()
+        .nullish()
+        .describe("ID заказа, связанного с транзакцией"),
+      orderType: zod
+        .enum(["car", "delivery", "pizza", "cinema", "game"])
+        .describe("Тип заказа, связанного с транзакцией")
+        .describe("Тип заказа, связанного с транзакцией"),
+      amount: zod.number().describe("Сумма транзакции"),
+      currency: zod.string().describe("Валюта транзакции"),
+      status: zod.enum(["pending", "paid", "failed"]),
+      expiresAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Время истечения транзакции (createdAt + 10 мин)"),
+      createdAt: zod.iso
+        .datetime({ offset: true })
+        .optional()
+        .describe("Дата создания"),
+      cardCryptoPacket: zod
+        .string()
+        .nullish()
+        .describe("Крипто-пакет карты в base64-формате"),
+      paidAt: zod.iso
+        .datetime({ offset: true })
+        .nullish()
+        .describe("Дата оплаты"),
+      accessToken: zod
+        .string()
+        .nullish()
+        .describe("Токен доступа к транзакции"),
+    })
+    .describe("Оплаченная транзакция"),
+});
+
+/**
+ * @summary Оплатить транзакцию по QR
+ */
+export const TransactionsControllerPayTransactionByQrParams = zod.object({
+  id: zod.string(),
+});
+
+export const TransactionsControllerPayTransactionByQrResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  transaction: zod
+    .object({
+      _id: zod.string().describe("ID транзакции"),
+      phone: zod.string().describe("Телефон владельца транзакции"),
+      orderId: zod
+        .string()
+        .nullish()
+        .describe("ID заказа, связанного с транзакцией"),
+      orderType: zod
+        .enum(["car", "delivery", "pizza", "cinema", "game"])
+        .describe("Тип заказа, связанного с транзакцией")
+        .describe("Тип заказа, связанного с транзакцией"),
+      amount: zod.number().describe("Сумма транзакции"),
+      currency: zod.string().describe("Валюта транзакции"),
+      status: zod.enum(["pending", "paid", "failed"]),
+      expiresAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Время истечения транзакции (createdAt + 10 мин)"),
+      createdAt: zod.iso
+        .datetime({ offset: true })
+        .optional()
+        .describe("Дата создания"),
+      cardCryptoPacket: zod
+        .string()
+        .nullish()
+        .describe("Крипто-пакет карты в base64-формате"),
+      paidAt: zod.iso
+        .datetime({ offset: true })
+        .nullish()
+        .describe("Дата оплаты"),
+      accessToken: zod
+        .string()
+        .nullish()
+        .describe("Токен доступа к транзакции"),
+    })
+    .describe("Оплаченная транзакция"),
+});
 
 /**
  * @summary Получить игры
  */
 export const GamesControllerGetGamesQueryParams = zod.object({
-  "filter": zod.array(zod.enum(['dlc', 'discount'])).optional().describe('Дополнительные фильтры'),
-  "view": zod.enum(['popular', 'new']).optional().describe('Предустановленный вид выборки'),
-  "genre": zod.array(zod.enum(['action', 'adventure', 'rpg', 'strategy', 'shooter', 'simulation', 'survival', 'sports', 'racing', 'indie', 'horror'])).optional().describe('Жанр'),
-  "page": zod.number().optional().describe('Страница'),
-  "limit": zod.number().optional().describe('Лимит')
-})
+  filter: zod
+    .array(zod.enum(["dlc", "discount"]))
+    .optional()
+    .describe("Дополнительные фильтры"),
+  view: zod
+    .enum(["popular", "new"])
+    .optional()
+    .describe("Предустановленный вид выборки"),
+  genre: zod
+    .array(
+      zod.enum([
+        "action",
+        "adventure",
+        "rpg",
+        "strategy",
+        "shooter",
+        "simulation",
+        "survival",
+        "sports",
+        "racing",
+        "indie",
+        "horror",
+      ]),
+    )
+    .optional()
+    .describe("Жанр"),
+  page: zod.number().optional().describe("Страница"),
+  limit: zod.number().optional().describe("Лимит"),
+});
 
 export const GamesControllerGetGamesResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "games": zod.array(zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "name": zod.string().describe('Название игры'),
-  "releaseDate": zod.number().describe('Дата релиза'),
-  "type": zod.enum(['game', 'dlc']).describe('Тип').describe('Тип'),
-  "genres": zod.array(zod.enum(['action', 'adventure', 'rpg', 'strategy', 'shooter', 'simulation', 'survival', 'sports', 'racing', 'indie', 'horror'])).describe('Жанры игры'),
-  "image": zod.string().describe('Изображение игры'),
-  "priceVariant": zod.object({
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион').describe('Регион'),
-  "price": zod.number().describe('Текущая цена'),
-  "oldPrice": zod.number().optional().describe('Старая цена'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения').describe('Способ получения'),
-  "edition": zod.string().describe('Издание')
-}).describe('Наименьший вариант цены')
-})).describe('Список игр'),
-  "meta": zod.object({
-  "total": zod.number().describe('Общее количество элементов'),
-  "page": zod.number().describe('Текущая страница'),
-  "limit": zod.number().describe('Элементов на странице'),
-  "totalPages": zod.number().describe('Количество страниц')
-}).describe('Пагинация')
-})
-
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  games: zod
+    .array(
+      zod.object({
+        slug: zod.string().describe("Slug игры"),
+        name: zod.string().describe("Название игры"),
+        releaseDate: zod.number().describe("Дата релиза"),
+        type: zod.enum(["game", "dlc"]).describe("Тип").describe("Тип"),
+        genres: zod
+          .array(
+            zod.enum([
+              "action",
+              "adventure",
+              "rpg",
+              "strategy",
+              "shooter",
+              "simulation",
+              "survival",
+              "sports",
+              "racing",
+              "indie",
+              "horror",
+            ]),
+          )
+          .describe("Жанры игры"),
+        image: zod.string().describe("Изображение игры"),
+        priceVariant: zod
+          .object({
+            region: zod
+              .enum([
+                "ru",
+                "kz",
+                "by",
+                "ua",
+                "pl",
+                "tr",
+                "all_world",
+                "europe",
+                "asia",
+              ])
+              .describe("Регион")
+              .describe("Регион"),
+            price: zod.number().describe("Текущая цена"),
+            oldPrice: zod.number().optional().describe("Старая цена"),
+            deliveryType: zod
+              .enum([
+                "steam_key",
+                "steam_gift",
+                "epic_key",
+                "nintendo_key",
+                "xbox_key",
+                "playstation_key",
+              ])
+              .describe("Способ получения")
+              .describe("Способ получения"),
+            edition: zod.string().describe("Издание"),
+          })
+          .describe("Наименьший вариант цены"),
+      }),
+    )
+    .describe("Список игр"),
+  meta: zod
+    .object({
+      total: zod.number().describe("Общее количество элементов"),
+      page: zod.number().describe("Текущая страница"),
+      limit: zod.number().describe("Элементов на странице"),
+      totalPages: zod.number().describe("Количество страниц"),
+    })
+    .describe("Пагинация"),
+});
 
 /**
  * @summary Поиск по играм
  */
 export const GamesControllerSearchGamesQueryParams = zod.object({
-  "search": zod.string().describe('Строка поиска'),
-  "limit": zod.number().optional().describe('Лимит')
-})
+  search: zod.string().describe("Строка поиска"),
+  limit: zod.number().optional().describe("Лимит"),
+});
 
 export const GamesControllerSearchGamesResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "games": zod.array(zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "name": zod.string().describe('Название игры'),
-  "releaseDate": zod.number().describe('Дата релиза'),
-  "type": zod.enum(['game', 'dlc']).describe('Тип').describe('Тип'),
-  "genres": zod.array(zod.enum(['action', 'adventure', 'rpg', 'strategy', 'shooter', 'simulation', 'survival', 'sports', 'racing', 'indie', 'horror'])).describe('Жанры игры'),
-  "image": zod.string().describe('Изображение игры'),
-  "priceVariant": zod.object({
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион').describe('Регион'),
-  "price": zod.number().describe('Текущая цена'),
-  "oldPrice": zod.number().optional().describe('Старая цена'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения').describe('Способ получения'),
-  "edition": zod.string().describe('Издание')
-}).describe('Наименьший вариант цены')
-})).describe('Результаты поиска игр')
-})
-
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  games: zod
+    .array(
+      zod.object({
+        slug: zod.string().describe("Slug игры"),
+        name: zod.string().describe("Название игры"),
+        releaseDate: zod.number().describe("Дата релиза"),
+        type: zod.enum(["game", "dlc"]).describe("Тип").describe("Тип"),
+        genres: zod
+          .array(
+            zod.enum([
+              "action",
+              "adventure",
+              "rpg",
+              "strategy",
+              "shooter",
+              "simulation",
+              "survival",
+              "sports",
+              "racing",
+              "indie",
+              "horror",
+            ]),
+          )
+          .describe("Жанры игры"),
+        image: zod.string().describe("Изображение игры"),
+        priceVariant: zod
+          .object({
+            region: zod
+              .enum([
+                "ru",
+                "kz",
+                "by",
+                "ua",
+                "pl",
+                "tr",
+                "all_world",
+                "europe",
+                "asia",
+              ])
+              .describe("Регион")
+              .describe("Регион"),
+            price: zod.number().describe("Текущая цена"),
+            oldPrice: zod.number().optional().describe("Старая цена"),
+            deliveryType: zod
+              .enum([
+                "steam_key",
+                "steam_gift",
+                "epic_key",
+                "nintendo_key",
+                "xbox_key",
+                "playstation_key",
+              ])
+              .describe("Способ получения")
+              .describe("Способ получения"),
+            edition: zod.string().describe("Издание"),
+          })
+          .describe("Наименьший вариант цены"),
+      }),
+    )
+    .describe("Результаты поиска игр"),
+});
 
 /**
  * @summary Получить игру
  */
 export const GamesControllerGetGameParams = zod.object({
-  "slug": zod.string().describe('Slug игры')
-})
+  slug: zod.string().describe("Slug игры"),
+});
 
 export const GamesControllerGetGameResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "game": zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "name": zod.string().describe('Название игры'),
-  "releaseDate": zod.number().describe('Дата релиза'),
-  "type": zod.enum(['game', 'dlc']).describe('Тип').describe('Тип'),
-  "genres": zod.array(zod.enum(['action', 'adventure', 'rpg', 'strategy', 'shooter', 'simulation', 'survival', 'sports', 'racing', 'indie', 'horror'])).describe('Жанры игры'),
-  "image": zod.string().describe('Изображение игры'),
-  "deliveryTypes": zod.array(zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения')).describe('Способ получения'),
-  "description": zod.string().describe('Описание игры'),
-  "minimumSystemRequirements": zod.object({
-  "oc": zod.string().optional().describe('Операционная система'),
-  "processor": zod.string().optional().describe('Процессор'),
-  "memory": zod.string().optional().describe('Оперативная память'),
-  "graphics": zod.string().optional().describe('Видеокарта'),
-  "storage": zod.string().optional().describe('Место на диске')
-}).describe('Минимальные системные требования'),
-  "recommendedSystemRequirements": zod.object({
-  "oc": zod.string().optional().describe('Операционная система'),
-  "processor": zod.string().optional().describe('Процессор'),
-  "memory": zod.string().optional().describe('Оперативная память'),
-  "graphics": zod.string().optional().describe('Видеокарта'),
-  "storage": zod.string().optional().describe('Место на диске')
-}).describe('Рекомендуемые системные требования'),
-  "developer": zod.string().describe('Разработчик'),
-  "publisher": zod.string().describe('Издатель'),
-  "externalId": zod.string().describe('Внешний ID (Steam\/KupiKod)'),
-  "screenshots": zod.array(zod.string()).describe('Скриншоты игры')
-}).describe('Игра')
-})
-
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  game: zod
+    .object({
+      slug: zod.string().describe("Slug игры"),
+      name: zod.string().describe("Название игры"),
+      releaseDate: zod.number().describe("Дата релиза"),
+      type: zod.enum(["game", "dlc"]).describe("Тип").describe("Тип"),
+      genres: zod
+        .array(
+          zod.enum([
+            "action",
+            "adventure",
+            "rpg",
+            "strategy",
+            "shooter",
+            "simulation",
+            "survival",
+            "sports",
+            "racing",
+            "indie",
+            "horror",
+          ]),
+        )
+        .describe("Жанры игры"),
+      image: zod.string().describe("Изображение игры"),
+      deliveryTypes: zod
+        .array(
+          zod
+            .enum([
+              "steam_key",
+              "steam_gift",
+              "epic_key",
+              "nintendo_key",
+              "xbox_key",
+              "playstation_key",
+            ])
+            .describe("Способ получения"),
+        )
+        .describe("Способ получения"),
+      description: zod.string().describe("Описание игры"),
+      minimumSystemRequirements: zod
+        .object({
+          oc: zod.string().optional().describe("Операционная система"),
+          processor: zod.string().optional().describe("Процессор"),
+          memory: zod.string().optional().describe("Оперативная память"),
+          graphics: zod.string().optional().describe("Видеокарта"),
+          storage: zod.string().optional().describe("Место на диске"),
+        })
+        .describe("Минимальные системные требования"),
+      recommendedSystemRequirements: zod
+        .object({
+          oc: zod.string().optional().describe("Операционная система"),
+          processor: zod.string().optional().describe("Процессор"),
+          memory: zod.string().optional().describe("Оперативная память"),
+          graphics: zod.string().optional().describe("Видеокарта"),
+          storage: zod.string().optional().describe("Место на диске"),
+        })
+        .describe("Рекомендуемые системные требования"),
+      developer: zod.string().describe("Разработчик"),
+      publisher: zod.string().describe("Издатель"),
+      externalId: zod.string().describe("Внешний ID (Steam\/KupiKod)"),
+      screenshots: zod.array(zod.string()).describe("Скриншоты игры"),
+    })
+    .describe("Игра"),
+});
 
 /**
  * @summary Получить регионы
  */
-export const GamesControllerGetRegionsQueryParams = zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Тип доставки')
-})
+export const GamesControllerGetGameRegionsQueryParams = zod.object({
+  slug: zod.string().describe("Slug игры"),
+  deliveryType: zod
+    .enum([
+      "steam_key",
+      "steam_gift",
+      "epic_key",
+      "nintendo_key",
+      "xbox_key",
+      "playstation_key",
+    ])
+    .describe("Тип доставки"),
+});
 
-export const GamesControllerGetRegionsResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "regions": zod.array(zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион')).describe('Доступные регионы')
-})
-
+export const GamesControllerGetGameRegionsResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  regions: zod
+    .array(
+      zod
+        .enum([
+          "ru",
+          "kz",
+          "by",
+          "ua",
+          "pl",
+          "tr",
+          "all_world",
+          "europe",
+          "asia",
+        ])
+        .describe("Регион"),
+    )
+    .describe("Доступные регионы"),
+});
 
 /**
  * @summary Получить варианты цен
  */
 export const GamesControllerGetPriceVariantsQueryParams = zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Тип доставки'),
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион')
-})
+  slug: zod.string().describe("Slug игры"),
+  deliveryType: zod
+    .enum([
+      "steam_key",
+      "steam_gift",
+      "epic_key",
+      "nintendo_key",
+      "xbox_key",
+      "playstation_key",
+    ])
+    .describe("Тип доставки"),
+  region: zod
+    .enum(["ru", "kz", "by", "ua", "pl", "tr", "all_world", "europe", "asia"])
+    .describe("Регион"),
+});
 
 export const GamesControllerGetPriceVariantsResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "priceVariants": zod.array(zod.object({
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион').describe('Регион'),
-  "price": zod.number().describe('Текущая цена'),
-  "oldPrice": zod.number().optional().describe('Старая цена'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения').describe('Способ получения'),
-  "edition": zod.string().describe('Издание')
-})).describe('Варианты цен для изданий')
-})
-
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  priceVariants: zod
+    .array(
+      zod.object({
+        region: zod
+          .enum([
+            "ru",
+            "kz",
+            "by",
+            "ua",
+            "pl",
+            "tr",
+            "all_world",
+            "europe",
+            "asia",
+          ])
+          .describe("Регион")
+          .describe("Регион"),
+        price: zod.number().describe("Текущая цена"),
+        oldPrice: zod.number().optional().describe("Старая цена"),
+        deliveryType: zod
+          .enum([
+            "steam_key",
+            "steam_gift",
+            "epic_key",
+            "nintendo_key",
+            "xbox_key",
+            "playstation_key",
+          ])
+          .describe("Способ получения")
+          .describe("Способ получения"),
+        edition: zod.string().describe("Издание"),
+      }),
+    )
+    .describe("Варианты цен для изданий"),
+});
 
 /**
- * @summary Купить игру и получить ключ
+ * @summary Создать заказ игры и транзакцию для оплаты
  */
 export const GamesControllerCreateGameOrderBody = zod.object({
-  "gameSlug": zod.string().describe('Slug игры'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения').describe('Тип доставки'),
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион').describe('Регион'),
-  "edition": zod.string().describe('Издание'),
-  "person": zod.object({
-  "phone": zod.string().describe('Телефон пользователя'),
-  "email": zod.string().describe('Email пользователя'),
-  "inviteLink": zod.string().optional().describe('Ссылка на приглашение')
-}).describe('Данные покупателя'),
-  "debitCard": zod.string().describe('Дебетовая карта для оплаты')
-})
+  gameSlug: zod.string().describe("Slug игры"),
+  deliveryType: zod
+    .enum([
+      "steam_key",
+      "steam_gift",
+      "epic_key",
+      "nintendo_key",
+      "xbox_key",
+      "playstation_key",
+    ])
+    .describe("Способ получения")
+    .describe("Тип доставки"),
+  region: zod
+    .enum(["ru", "kz", "by", "ua", "pl", "tr", "all_world", "europe", "asia"])
+    .describe("Регион")
+    .describe("Регион"),
+  edition: zod.string().describe("Издание"),
+  person: zod
+    .object({
+      phone: zod.string().describe("Телефон пользователя"),
+      email: zod.string().describe("Email пользователя"),
+      inviteLink: zod.string().optional().describe("Ссылка на приглашение"),
+    })
+    .describe("Данные покупателя"),
+});
 
 export const GamesControllerCreateGameOrderResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "order": zod.object({
-  "_id": zod.string().describe('ID заказа'),
-  "person": zod.object({
-  "phone": zod.string().describe('Телефон'),
-  "email": zod.string().describe('Email'),
-  "inviteLink": zod.string().optional().describe('Ссылка на приглашение')
-}).describe('Данные покупателя'),
-  "gameSnapshot": zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "name": zod.string().describe('Название игры'),
-  "image": zod.string().describe('Картинка игры'),
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион').describe('Регион'),
-  "price": zod.number().describe('Текущая цена'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения').describe('Способ получения'),
-  "edition": zod.string().describe('Издание')
-}).describe('Снимок игры на момент заказа'),
-  "gameKey": zod.string().optional().describe('Сгенерированный игровой ключ')
-}).describe('Заказ на игру')
-})
-
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  order: zod
+    .object({
+      _id: zod.string().describe("ID заказа"),
+      createdAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Дата создания заказа"),
+      updatedAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Дата обновления заказа"),
+      person: zod
+        .object({
+          phone: zod.string().describe("Телефон"),
+          email: zod.string().describe("Email"),
+          inviteLink: zod.string().optional().describe("Ссылка на приглашение"),
+        })
+        .describe("Данные покупателя"),
+      gameSlug: zod.string().describe("Slug игры"),
+      region: zod
+        .enum([
+          "ru",
+          "kz",
+          "by",
+          "ua",
+          "pl",
+          "tr",
+          "all_world",
+          "europe",
+          "asia",
+        ])
+        .describe("Регион")
+        .describe("Регион"),
+      price: zod.number().describe("Цена заказа"),
+      deliveryType: zod
+        .enum([
+          "steam_key",
+          "steam_gift",
+          "epic_key",
+          "nintendo_key",
+          "xbox_key",
+          "playstation_key",
+        ])
+        .describe("Способ получения")
+        .describe("Способ получения"),
+      edition: zod.string().describe("Издание"),
+      status: zod
+        .enum(["awaiting_payment", "paid"])
+        .describe("Статус заказа")
+        .describe("Статус заказа"),
+      gameKey: zod
+        .looseObject({})
+        .optional()
+        .describe("Сгенерированный игровой ключ (выдаётся после оплаты)"),
+      transactionId: zod
+        .string()
+        .nullable()
+        .describe("ID связанной транзакции"),
+    })
+    .describe("Заказ на игру (ожидает оплаты)"),
+  transaction: zod
+    .object({
+      _id: zod.string().describe("ID транзакции"),
+      phone: zod.string().describe("Телефон владельца транзакции"),
+      orderId: zod
+        .string()
+        .nullish()
+        .describe("ID заказа, связанного с транзакцией"),
+      orderType: zod
+        .enum(["car", "delivery", "pizza", "cinema", "game"])
+        .describe("Тип заказа, связанного с транзакцией")
+        .describe("Тип заказа, связанного с транзакцией"),
+      amount: zod.number().describe("Сумма транзакции"),
+      currency: zod.string().describe("Валюта транзакции"),
+      status: zod.enum(["pending", "paid", "failed"]),
+      expiresAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Время истечения транзакции (createdAt + 10 мин)"),
+      createdAt: zod.iso
+        .datetime({ offset: true })
+        .optional()
+        .describe("Дата создания"),
+      cardCryptoPacket: zod
+        .string()
+        .nullish()
+        .describe("Крипто-пакет карты в base64-формате"),
+      paidAt: zod.iso
+        .datetime({ offset: true })
+        .nullish()
+        .describe("Дата оплаты"),
+      accessToken: zod
+        .string()
+        .nullish()
+        .describe("Токен доступа к транзакции"),
+    })
+    .describe("Транзакция для оплаты"),
+});
 
 /**
  * @summary Получить все заказы игр
  */
-export const GamesControllerGetGameOrdersHeader = zod.object({
-  "authorization": zod.string().optional()
-})
-
 export const GamesControllerGetGameOrdersResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "orders": zod.array(zod.object({
-  "_id": zod.string().describe('ID заказа'),
-  "person": zod.object({
-  "phone": zod.string().describe('Телефон'),
-  "email": zod.string().describe('Email'),
-  "inviteLink": zod.string().optional().describe('Ссылка на приглашение')
-}).describe('Данные покупателя'),
-  "gameSnapshot": zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "name": zod.string().describe('Название игры'),
-  "image": zod.string().describe('Картинка игры'),
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион').describe('Регион'),
-  "price": zod.number().describe('Текущая цена'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения').describe('Способ получения'),
-  "edition": zod.string().describe('Издание')
-}).describe('Снимок игры на момент заказа'),
-  "gameKey": zod.string().optional().describe('Сгенерированный игровой ключ')
-})).describe('Заказы пользователя')
-})
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  orders: zod
+    .array(
+      zod.object({
+        _id: zod.string().describe("ID заказа"),
+        createdAt: zod.iso
+          .datetime({ offset: true })
+          .describe("Дата создания заказа"),
+        updatedAt: zod.iso
+          .datetime({ offset: true })
+          .describe("Дата обновления заказа"),
+        person: zod
+          .object({
+            phone: zod.string().describe("Телефон"),
+            email: zod.string().describe("Email"),
+            inviteLink: zod
+              .string()
+              .optional()
+              .describe("Ссылка на приглашение"),
+          })
+          .describe("Данные покупателя"),
+        gameSlug: zod.string().describe("Slug игры"),
+        region: zod
+          .enum([
+            "ru",
+            "kz",
+            "by",
+            "ua",
+            "pl",
+            "tr",
+            "all_world",
+            "europe",
+            "asia",
+          ])
+          .describe("Регион")
+          .describe("Регион"),
+        price: zod.number().describe("Цена заказа"),
+        deliveryType: zod
+          .enum([
+            "steam_key",
+            "steam_gift",
+            "epic_key",
+            "nintendo_key",
+            "xbox_key",
+            "playstation_key",
+          ])
+          .describe("Способ получения")
+          .describe("Способ получения"),
+        edition: zod.string().describe("Издание"),
+        status: zod
+          .enum(["awaiting_payment", "paid"])
+          .describe("Статус заказа")
+          .describe("Статус заказа"),
+        gameKey: zod
+          .looseObject({})
+          .optional()
+          .describe("Сгенерированный игровой ключ (выдаётся после оплаты)"),
+        transactionId: zod
+          .string()
+          .nullable()
+          .describe("ID связанной транзакции"),
+      }),
+    )
+    .describe("Заказы пользователя"),
+});
 
+/**
+ * @summary Получить оплаченный заказ игры по одноразовому токену
+ */
+export const GamesControllerGetGamePaidOrderQueryParams = zod.object({
+  token: zod.string().describe("Одноразовый токен доступа"),
+});
+
+export const GamesControllerGetGamePaidOrderResponse = zod.object({
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  order: zod
+    .object({
+      _id: zod.string().describe("ID заказа"),
+      createdAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Дата создания заказа"),
+      updatedAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Дата обновления заказа"),
+      person: zod
+        .object({
+          phone: zod.string().describe("Телефон"),
+          email: zod.string().describe("Email"),
+          inviteLink: zod.string().optional().describe("Ссылка на приглашение"),
+        })
+        .describe("Данные покупателя"),
+      gameSlug: zod.string().describe("Slug игры"),
+      region: zod
+        .enum([
+          "ru",
+          "kz",
+          "by",
+          "ua",
+          "pl",
+          "tr",
+          "all_world",
+          "europe",
+          "asia",
+        ])
+        .describe("Регион")
+        .describe("Регион"),
+      price: zod.number().describe("Цена заказа"),
+      deliveryType: zod
+        .enum([
+          "steam_key",
+          "steam_gift",
+          "epic_key",
+          "nintendo_key",
+          "xbox_key",
+          "playstation_key",
+        ])
+        .describe("Способ получения")
+        .describe("Способ получения"),
+      edition: zod.string().describe("Издание"),
+      status: zod
+        .enum(["awaiting_payment", "paid"])
+        .describe("Статус заказа")
+        .describe("Статус заказа"),
+      gameKey: zod
+        .looseObject({})
+        .optional()
+        .describe("Сгенерированный игровой ключ (выдаётся после оплаты)"),
+      transactionId: zod
+        .string()
+        .nullable()
+        .describe("ID связанной транзакции"),
+    })
+    .describe("Заказ"),
+});
 
 /**
  * @summary Получить заказ игры
  */
 export const GamesControllerGetGameOrderParams = zod.object({
-  "orderId": zod.string().describe('ID заказа')
-})
-
-export const GamesControllerGetGameOrderHeader = zod.object({
-  "authorization": zod.string().optional()
-})
+  orderId: zod.string().describe("ID заказа"),
+});
 
 export const GamesControllerGetGameOrderResponse = zod.object({
-  "success": zod.boolean().describe('Статус запроса'),
-  "reason": zod.string().optional().describe('Причина ошибки'),
-  "order": zod.object({
-  "_id": zod.string().describe('ID заказа'),
-  "person": zod.object({
-  "phone": zod.string().describe('Телефон'),
-  "email": zod.string().describe('Email'),
-  "inviteLink": zod.string().optional().describe('Ссылка на приглашение')
-}).describe('Данные покупателя'),
-  "gameSnapshot": zod.object({
-  "slug": zod.string().describe('Slug игры'),
-  "name": zod.string().describe('Название игры'),
-  "image": zod.string().describe('Картинка игры'),
-  "region": zod.enum(['ru', 'kz', 'by', 'ua', 'pl', 'tr', 'all_world', 'europe', 'asia']).describe('Регион').describe('Регион'),
-  "price": zod.number().describe('Текущая цена'),
-  "deliveryType": zod.enum(['steam_key', 'steam_gift', 'epic_key', 'nintendo_key', 'xbox_key', 'playstation_key']).describe('Способ получения').describe('Способ получения'),
-  "edition": zod.string().describe('Издание')
-}).describe('Снимок игры на момент заказа'),
-  "gameKey": zod.string().optional().describe('Сгенерированный игровой ключ')
-}).describe('Заказ')
-})
-
-
+  success: zod.boolean().describe("Статус запроса"),
+  reason: zod.string().optional().describe("Причина ошибки"),
+  order: zod
+    .object({
+      _id: zod.string().describe("ID заказа"),
+      createdAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Дата создания заказа"),
+      updatedAt: zod.iso
+        .datetime({ offset: true })
+        .describe("Дата обновления заказа"),
+      person: zod
+        .object({
+          phone: zod.string().describe("Телефон"),
+          email: zod.string().describe("Email"),
+          inviteLink: zod.string().optional().describe("Ссылка на приглашение"),
+        })
+        .describe("Данные покупателя"),
+      gameSlug: zod.string().describe("Slug игры"),
+      region: zod
+        .enum([
+          "ru",
+          "kz",
+          "by",
+          "ua",
+          "pl",
+          "tr",
+          "all_world",
+          "europe",
+          "asia",
+        ])
+        .describe("Регион")
+        .describe("Регион"),
+      price: zod.number().describe("Цена заказа"),
+      deliveryType: zod
+        .enum([
+          "steam_key",
+          "steam_gift",
+          "epic_key",
+          "nintendo_key",
+          "xbox_key",
+          "playstation_key",
+        ])
+        .describe("Способ получения")
+        .describe("Способ получения"),
+      edition: zod.string().describe("Издание"),
+      status: zod
+        .enum(["awaiting_payment", "paid"])
+        .describe("Статус заказа")
+        .describe("Статус заказа"),
+      gameKey: zod
+        .looseObject({})
+        .optional()
+        .describe("Сгенерированный игровой ключ (выдаётся после оплаты)"),
+      transactionId: zod
+        .string()
+        .nullable()
+        .describe("ID связанной транзакции"),
+    })
+    .describe("Заказ"),
+});

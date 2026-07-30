@@ -5,7 +5,7 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { FilteredGame } from './filteredGame';
+import type { GameFiltered } from "./gameFiltered";
 
 export interface GameSearchResponse {
   /** Статус запроса */
@@ -13,5 +13,5 @@ export interface GameSearchResponse {
   /** Причина ошибки */
   reason?: string;
   /** Результаты поиска игр */
-  games: FilteredGame[];
+  games: GameFiltered[];
 }

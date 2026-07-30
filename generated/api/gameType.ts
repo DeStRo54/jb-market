@@ -9,10 +9,9 @@
 /**
  * Тип
  */
-export type GameType = typeof GameType[keyof typeof GameType];
-
+export type GameType = (typeof GameType)[keyof typeof GameType];
 
 export const GameType = {
-  game: 'game',
-  dlc: 'dlc',
+  game: "game",
+  dlc: "dlc",
 } as const;

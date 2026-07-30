@@ -5,20 +5,20 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { DeliveryType } from './deliveryType';
-import type { Region } from './region';
+import type { GameDeliveryType } from "./gameDeliveryType";
+import type { GameRegion } from "./gameRegion";
 
 export type GamesControllerGetPriceVariantsParams = {
-/**
- * Slug игры
- */
-slug: string;
-/**
- * Тип доставки
- */
-deliveryType: DeliveryType;
-/**
- * Регион
- */
-region: Region;
+  /**
+   * Slug игры
+   */
+  slug: string;
+  /**
+   * Тип доставки
+   */
+  deliveryType: GameDeliveryType;
+  /**
+   * Регион
+   */
+  region: GameRegion;
 };

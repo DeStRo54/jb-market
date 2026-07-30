@@ -5,15 +5,15 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { User } from './user';
+import type { User } from "./user";
 
 export interface SignInResponse {
   /** Статус запроса */
   success: boolean;
   /** Причина ошибки */
   reason?: string;
+  /** Токен сессии */
+  token: string;
   /** Пользователь */
   user: User;
-  /** Пользовательский токен */
-  token: string;
 }

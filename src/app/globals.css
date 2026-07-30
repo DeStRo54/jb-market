@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -294,7 +295,7 @@
   --color-muted-fg: var(--color-neutral-300);
 
   /* Surface - более светлая поверхность */
-  --color-surface: var(--color-neutral-800);
+  --color-surface: var(--color-neutral-400);
   --color-surface-fg: var(--color-neutral-200);
 
   /* Borders & UI - более мягкие границы */
@@ -338,10 +339,6 @@
     @apply border-border-hard outline-ring/50;
   }
 
-  html {
-    scroll-behavior: smooth;
-  }
-
   body {
     @apply bg-background text-foreground;
   }
@@ -349,7 +346,7 @@
 
 @layer components {
   .content-container {
-    @apply px-4 max-w-7xl mx-auto w-full;
+    @apply px-4 sm:py-16 pt-6 pb-4 max-w-7xl mx-auto w-full;
   }
 }
 

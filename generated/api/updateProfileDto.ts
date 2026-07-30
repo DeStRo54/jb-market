@@ -5,11 +5,16 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { UpdateProfileProfileDto } from './updateProfileProfileDto';
 
 export interface UpdateProfileDto {
-  /** Данные пользователя */
-  profile: UpdateProfileProfileDto;
-  /** Номер телефона */
-  phone: string;
+  /** Имя */
+  firstname?: string;
+  /** Отчество */
+  middlename?: string;
+  /** Фамилия */
+  lastname?: string;
+  /** Почта */
+  email?: string;
+  /** Город */
+  city?: string;
 }

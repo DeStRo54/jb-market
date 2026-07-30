@@ -6,19 +6,18 @@
  * OpenAPI spec version: 1.0
  */
 
-export type GameGenre = typeof GameGenre[keyof typeof GameGenre];
-
+export type GameGenre = (typeof GameGenre)[keyof typeof GameGenre];
 
 export const GameGenre = {
-  action: 'action',
-  adventure: 'adventure',
-  rpg: 'rpg',
-  strategy: 'strategy',
-  shooter: 'shooter',
-  simulation: 'simulation',
-  survival: 'survival',
-  sports: 'sports',
-  racing: 'racing',
-  indie: 'indie',
-  horror: 'horror',
+  action: "action",
+  adventure: "adventure",
+  rpg: "rpg",
+  strategy: "strategy",
+  shooter: "shooter",
+  simulation: "simulation",
+  survival: "survival",
+  sports: "sports",
+  racing: "racing",
+  indie: "indie",
+  horror: "horror",
 } as const;

@@ -5,21 +5,19 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { CreateGameOrderPersonDto } from './createGameOrderPersonDto';
-import type { DeliveryType } from './deliveryType';
-import type { Region } from './region';
+import type { CreateGameOrderPersonDto } from "./createGameOrderPersonDto";
+import type { GameDeliveryType } from "./gameDeliveryType";
+import type { GameRegion } from "./gameRegion";
 
 export interface CreateGameOrderDto {
   /** Slug игры */
   gameSlug: string;
   /** Тип доставки */
-  deliveryType: DeliveryType;
+  deliveryType: GameDeliveryType;
   /** Регион */
-  region: Region;
+  region: GameRegion;
   /** Издание */
   edition: string;
   /** Данные покупателя */
   person: CreateGameOrderPersonDto;
-  /** Дебетовая карта для оплаты */
-  debitCard: string;
 }

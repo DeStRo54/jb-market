@@ -5,16 +5,38 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { GameOrderPerson } from './gameOrderPerson';
-import type { GameOrderSnapshot } from './gameOrderSnapshot';
+import type { GameDeliveryType } from "./gameDeliveryType";
+import type { GameOrderGameKey } from "./gameOrderGameKey";
+import type { GameOrderPerson } from "./gameOrderPerson";
+import type { GameOrderStatus } from "./gameOrderStatus";
+import type { GameRegion } from "./gameRegion";
 
 export interface GameOrder {
   /** ID заказа */
   _id: string;
+  /** Дата создания заказа */
+  createdAt: string;
+  /** Дата обновления заказа */
+  updatedAt: string;
   /** Данные покупателя */
   person: GameOrderPerson;
-  /** Снимок игры на момент заказа */
-  gameSnapshot: GameOrderSnapshot;
-  /** Сгенерированный игровой ключ */
-  gameKey?: string;
+  /** Slug игры */
+  gameSlug: string;
+  /** Регион */
+  region: GameRegion;
+  /** Цена заказа */
+  price: number;
+  /** Способ получения */
+  deliveryType: GameDeliveryType;
+  /** Издание */
+  edition: string;
+  /** Статус заказа */
+  status: GameOrderStatus;
+  /** Сгенерированный игровой ключ (выдаётся после оплаты) */
+  gameKey?: GameOrderGameKey;
+  /**
+   * ID связанной транзакции
+   * @nullable
+   */
+  transactionId: string | null;
 }

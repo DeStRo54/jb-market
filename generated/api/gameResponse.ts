@@ -5,7 +5,7 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { DetailedGame } from './detailedGame';
+import type { GameDetailed } from "./gameDetailed";
 
 export interface GameResponse {
   /** Статус запроса */
@@ -13,5 +13,5 @@ export interface GameResponse {
   /** Причина ошибки */
   reason?: string;
   /** Игра */
-  game: DetailedGame;
+  game: GameDetailed;
 }

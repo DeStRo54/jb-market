@@ -5,8 +5,8 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { FilteredGame } from './filteredGame';
-import type { GamesPaginationMeta } from './gamesPaginationMeta';
+import type { GameFiltered } from "./gameFiltered";
+import type { GamePaginationMeta } from "./gamePaginationMeta";
 
 export interface GamesPaginatedResponse {
   /** Статус запроса */
@@ -14,7 +14,7 @@ export interface GamesPaginatedResponse {
   /** Причина ошибки */
   reason?: string;
   /** Список игр */
-  games: FilteredGame[];
+  games: GameFiltered[];
   /** Пагинация */
-  meta: GamesPaginationMeta;
+  meta: GamePaginationMeta;
 }

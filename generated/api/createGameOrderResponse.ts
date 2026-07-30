@@ -5,13 +5,16 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { GameOrder } from './gameOrder';
+import type { GameOrder } from "./gameOrder";
+import type { Transaction } from "./transaction";
 
 export interface CreateGameOrderResponse {
   /** Статус запроса */
   success: boolean;
   /** Причина ошибки */
   reason?: string;
-  /** Заказ на игру */
+  /** Заказ на игру (ожидает оплаты) */
   order: GameOrder;
+  /** Транзакция для оплаты */
+  transaction: Transaction;
 }

@@ -6,10 +6,9 @@
  * OpenAPI spec version: 1.0
  */
 
-export type GameView = typeof GameView[keyof typeof GameView];
-
+export type GameView = (typeof GameView)[keyof typeof GameView];
 
 export const GameView = {
-  popular: 'popular',
-  new: 'new',
+  popular: "popular",
+  new: "new",
 } as const;

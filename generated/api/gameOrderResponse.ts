@@ -5,7 +5,7 @@
  * Апи для выполнения индивидуальных заданий
  * OpenAPI spec version: 1.0
  */
-import type { GameOrder } from './gameOrder';
+import type { GameOrder } from "./gameOrder";
 
 export interface GameOrderResponse {
   /** Статус запроса */

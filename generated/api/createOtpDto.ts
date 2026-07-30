@@ -7,5 +7,6 @@
  */
 
 export interface CreateOtpDto {
+  /** Номер телефона */
   phone: string;
 }

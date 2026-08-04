@@ -1,6 +1,6 @@
 "use client";
 
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "radix-ui";
 import type { ComponentProps } from "react";
 
 import { cn } from "@/lib/tailwind";
@@ -13,7 +13,7 @@ const Input = ({
 }: ComponentProps<"input"> & {
   asChild?: boolean;
 }) => {
-  const Comp = asChild ? Slot : "input";
+  const Comp = asChild ? Slot.Root : "input";
 
   return (
     <Comp

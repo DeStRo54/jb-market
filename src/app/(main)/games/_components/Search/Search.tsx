@@ -58,11 +58,7 @@ export const Search = () => {
   const onClear = () => setSearchValue("");
 
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-[14px]/[22px]" htmlFor={searchInputId}>
-        <I18nText path="page.catalog.search.label" />
-      </label>
-
+    <div className="w-full">
       <Combobox
         filter={null}
         openOnInputClick={false}
@@ -124,7 +120,7 @@ export const Search = () => {
               <ComboboxItem key={game.slug} value={game.slug}>
                 <Link
                   href={DYNAMIC_ROUTES.GAME(game.slug)}
-                  className="flex flex-row gap-2 w-full"
+                  className="flex flex-wrap items-center gap-3 sm:gap-2 w-full"
                 >
                   <div className="flex flex-row gap-2 w-112.5 items-center">
                     <Image
@@ -139,14 +135,14 @@ export const Search = () => {
                       {game.name}
                     </Typography>
                   </div>
-                  <div className="flex flex-row gap-2.5 max-w-112.5 flex-1">
+                  <div className="max-w-112.5 flex-1">
                     <Badge>
                       <I18nText
                         path={`deliveryType.${game.priceVariant.deliveryType}`}
                       />
                     </Badge>
                   </div>
-                  <div className="flex flex-row gap-2 items-center">
+                  <div className="flex flex-row gap-2 items-center ml-auto">
                     {!!game.priceVariant.oldPrice && (
                       <Badge variant="accent" className="px-2 py-1">
                         {getDiscount(

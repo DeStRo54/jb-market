@@ -1,20 +1,26 @@
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useQueryStates } from "nuqs";
 import { useMemo, useState } from "react";
 import { useIntl } from "react-intl";
 
-import { GENRES } from "@/app/games/-constants/filters";
 import { useDisclosure } from "@/utils/hooks/useDisclosure";
 
+import { CATALOG_GENRES } from "../../../-constants/filters";
+import { filtersParser, genresParser } from "../schemas/params";
+
 export const useFilters = () => {
-  const searchParams = useSearchParams();
-  const pathname = usePathname();
-  const router = useRouter();
+  const [searchParams, setSearchParams] = useQueryStates(
+    {
+      filter: filtersParser,
+      genre: genresParser,
+    },
+    { shallow: false },
+  );
   const [genreSearchValue, setGenreSearchValue] = useState("");
   const intl = useIntl();
 
   const filteredGenres = useMemo(() => {
     const normalizedSearchValue = genreSearchValue.trim().toLowerCase();
-    return GENRES.filter((genre) =>
+    return CATALOG_GENRES.filter((genre) =>
       intl
         .formatMessage({ id: `genre.${genre}` })
         .toLocaleLowerCase()
@@ -22,7 +28,11 @@ export const useFilters = () => {
     );
   }, [genreSearchValue, intl]);
 
-  const { opened: allGenresOpened, toggle: onToggleGenres } = useDisclosure();
+  const {
+    opened: allGenresOpened,
+    open: onShowMoreGenres,
+    close: onHideMoreGenres,
+  } = useDisclosure();
 
   const visibleGenres = allGenresOpened
     ? filteredGenres
@@ -31,26 +41,30 @@ export const useFilters = () => {
   const onGenreSearch = (searchValue: string) =>
     setGenreSearchValue(searchValue);
 
-  const onResetFilters = () => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.delete("filter");
+  const onSetSearchParams = (newParams: Partial<typeof searchParams>) =>
+    setSearchParams(newParams);
 
-    router.push(`${pathname}?${params.toString()}`);
+  const onResetFilters = () => {
+    setSearchParams({
+      filter: [],
+      genre: [],
+    });
   };
 
   return {
     state: {
+      intl,
       searchParams,
-      pathname,
       filteredGenres,
       allGenresOpened,
       genreSearchValue,
       visibleGenres,
     },
     functions: {
-      router,
       onGenreSearch,
-      onToggleGenres,
+      onSetSearchParams,
+      onShowMoreGenres,
+      onHideMoreGenres,
       onResetFilters,
     },
   } as const;

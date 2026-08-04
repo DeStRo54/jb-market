@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { parseAsStringEnum, useQueryState } from "nuqs";
 
 import { I18nText } from "@/components/common/I18nText";
 import { ChipGroup, ChipGroupItem } from "@/components/ui/ChipGroup";
@@ -8,23 +8,19 @@ import { cn } from "@/lib/tailwind";
 
 import { ALL_CATALOG_VIEWS, ALL_VIEW } from "../../-constants/view";
 
-export const ViewChips = () => {
-  const searchParams = useSearchParams();
-  const router = useRouter();
-  const pathname = usePathname();
+const viewParser = parseAsStringEnum([...ALL_CATALOG_VIEWS])
+  .withDefault(ALL_VIEW)
+  .withOptions({
+    clearOnDefault: true,
+    shallow: false,
+  });
 
-  const view = searchParams.get("view");
+export const ViewChips = () => {
+  const [view, setView] = useQueryState("view", viewParser);
 
   const onViewChange = (newView: (typeof ALL_CATALOG_VIEWS)[number] | "") => {
     if (!newView) return;
-
-    const params = new URLSearchParams(searchParams.toString());
-    if (newView === "all") {
-      params.delete("view");
-    } else {
-      params.set("view", newView);
-    }
-    router.push(`${pathname}?${params.toString()}`);
+    setView(newView);
   };
 
   return (

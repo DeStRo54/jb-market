@@ -8,8 +8,6 @@ import { Toaster } from "@/components/ui/Toaster";
 import { intl } from "@/i18n/server";
 import { cn } from "@/lib/tailwind";
 
-import { Footer } from "./_components/Footer";
-import { Header } from "./_components/Header";
 import { ThemeScript } from "./_scripts/theme";
 import { Providers } from "./providers";
 
@@ -40,11 +38,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
       </head>
       <body className="flex min-h-screen flex-col overflow-x-hidden">
         <Providers intl={{ locale: intl.locale, messages: intl.messages }}>
-          <div className="content-container">
-            <Header />
-            <div className="flex flex-1 flex-col">{children}</div>
-            <Footer />
-          </div>
+          <div className="content-container">{children}</div>
         </Providers>
         <Toaster />
       </body>

@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/Badge";
 import { Typography } from "@/components/ui/Typography";
 import { GameFiltered } from "@/generated/api";
 import { formatMoney } from "@/utils/helpers/formatMoney";
+import { getAsset } from "@/utils/helpers/getAsset";
 import { getDiscount } from "@/utils/helpers/getDiscount";
 
 interface GameCardProps {
@@ -22,7 +23,7 @@ export const GameCard = ({ game }: GameCardProps) => (
       <div className="h-39.5 w-full overflow-hidden rounded-24 bg-secondary">
         <div className="w-full h-39.5 relative">
           <Image
-            src={`/api${game.image}`}
+            src={getAsset(game.image)}
             alt={game.name}
             fill
             loading="lazy"

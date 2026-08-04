@@ -1,7 +1,6 @@
 "use client";
 
 import { SearchIcon } from "lucide-react";
-import { useIntl } from "react-intl";
 
 import { I18nText } from "@/components/common/I18nText";
 import { Button } from "@/components/ui/Button";
@@ -14,53 +13,67 @@ import {
 } from "@/components/ui/InputGroup";
 import { Switch } from "@/components/ui/Switch";
 import { Typography } from "@/components/ui/Typography";
+import { GameFilter, GameGenre } from "@/generated/api";
 
 import { useFilters } from "./hooks/useFilters";
 
-export const Filters = () => {
+export const DesktopFilters = () => {
   const { state, functions } = useFilters();
-  const intl = useIntl();
 
-  const placeholder = intl.formatMessage({
+  const searchPlaceholder = state.intl.formatMessage({
     id: "page.catalog.filters.genrePlaceholder",
   });
 
-  const filters: string[] = JSON.parse(
-    state.searchParams.get("filter") || "[]",
-  );
-
   const onToggleDiscount = (checked: boolean) => {
-    const params = new URLSearchParams(state.searchParams);
+    const newFilters: GameFilter[] = checked
+      ? [...state.searchParams.filter, "discount"]
+      : state.searchParams.filter.filter((f) => f !== "discount");
 
-    const newFilters = checked
-      ? [...filters, "discount"]
-      : filters.filter((f) => f !== "discount");
+    functions.onSetSearchParams({
+      filter: newFilters,
+    });
+  };
 
-    if (newFilters.length === 0) {
-      params.delete("filter");
-    } else {
-      params.set("filter", JSON.stringify(newFilters));
-    }
-    functions.router.push(`${state.pathname}?${params.toString()}`);
+  const onToggleDlc = (checked: boolean) => {
+    const newFilters: GameFilter[] = checked
+      ? [...state.searchParams.filter, "dlc"]
+      : state.searchParams.filter.filter((f) => f !== "dlc");
+
+    functions.onSetSearchParams({
+      filter: newFilters,
+    });
+  };
+
+  const onGenreChange = (genre: GameGenre, checked: boolean) => {
+    const newGenres = checked
+      ? [...state.searchParams.genre, genre]
+      : state.searchParams.genre.filter((g) => g !== genre);
+
+    functions.onSetSearchParams({
+      genre: newGenres,
+    });
   };
 
   return (
     <div className="flex flex-col gap-6 w-66">
-      <div className="flex flex-row justify-between">
+      <label className="flex flex-row justify-between">
         <Typography variant="body-md">
           <I18nText path="page.catalog.filters.discount" />
         </Typography>
         <Switch
-          checked={filters.includes("discount")}
+          checked={state.searchParams.filter.includes("discount")}
           onCheckedChange={onToggleDiscount}
         />
-      </div>
-      <div className="flex flex-row justify-between">
+      </label>
+      <label className="flex flex-row justify-between">
         <Typography variant="body-md">
           <I18nText path="page.catalog.filters.dlc" />
         </Typography>
-        <Switch />
-      </div>
+        <Switch
+          checked={state.searchParams.filter.includes("dlc")}
+          onCheckedChange={onToggleDlc}
+        />
+      </label>
       <div className="flex flex-col gap-4">
         <Typography variant="body-md">
           <I18nText path="page.catalog.filters.genre" />
@@ -72,7 +85,7 @@ export const Filters = () => {
             </InputGroupIconButton>
           </InputGroupAddon>
           <InputGroupInput
-            placeholder={placeholder}
+            placeholder={searchPlaceholder}
             value={state.genreSearchValue}
             onChange={(event) => functions.onGenreSearch(event.target.value)}
           />
@@ -83,7 +96,8 @@ export const Filters = () => {
               <label className="flex min-h-5 items-center gap-2 cursor-pointer">
                 <Checkbox
                   className="rounded-4 border border-ring bg-background"
-                  defaultChecked={false}
+                  checked={state.searchParams.genre.includes(genre)}
+                  onCheckedChange={(checked) => onGenreChange(genre, !!checked)}
                 />
                 <Typography variant="caption" as="span">
                   <I18nText path={`genre.${genre}`} />
@@ -103,23 +117,27 @@ export const Filters = () => {
           </Typography>
         )}
 
-        {state.filteredGenres.length >= 5 && (
+        {state.filteredGenres.length >= 5 && !state.allGenresOpened && (
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => functions.onToggleGenres()}
+            onClick={functions.onShowMoreGenres}
           >
-            <I18nText
-              path={
-                state.allGenresOpened
-                  ? "page.catalog.filters.hide"
-                  : "button.showMore"
-              }
-            />
+            <I18nText path="button.showMore" />
+          </Button>
+        )}
+
+        {state.filteredGenres.length >= 5 && state.allGenresOpened && (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={functions.onHideMoreGenres}
+          >
+            <I18nText path="page.catalog.filters.hide" />
           </Button>
         )}
       </div>
-      <Button variant="secondary" size="lg">
+      <Button variant="secondary" size="lg" onClick={functions.onResetFilters}>
         <I18nText path="page.catalog.filters.reset" />
       </Button>
     </div>

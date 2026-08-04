@@ -1,5 +1,6 @@
 "use client";
 
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 import type { ComponentProps, ReactNode } from "react";
 import { IntlProvider } from "react-intl";
 
@@ -12,9 +13,11 @@ interface ProvidersProps {
 }
 
 export const Providers = ({ children, intl }: ProvidersProps) => (
-  <IntlProvider {...intl}>
-    <QueryProvider>
-      <ThemeProvider>{children}</ThemeProvider>
-    </QueryProvider>
-  </IntlProvider>
+  <NuqsAdapter>
+    <IntlProvider {...intl}>
+      <QueryProvider>
+        <ThemeProvider>{children}</ThemeProvider>
+      </QueryProvider>
+    </IntlProvider>
+  </NuqsAdapter>
 );

@@ -1,11 +1,8 @@
 "use client";
 
-import {
-  ToggleGroup as ChipGroupPrimitive,
-  ToggleGroupItem as ChipGroupPrimitiveItem,
-} from "@radix-ui/react-toggle-group";
 import type { VariantProps } from "class-variance-authority";
 import { XIcon } from "lucide-react";
+import { ToggleGroup as ChipGroupPrimitive } from "radix-ui";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "@/lib/tailwind";
@@ -15,8 +12,8 @@ import { chipVariants } from "./Chip";
 const ChipGroup = ({
   className,
   ...props
-}: ComponentProps<typeof ChipGroupPrimitive>) => (
-  <ChipGroupPrimitive
+}: ComponentProps<typeof ChipGroupPrimitive.Root>) => (
+  <ChipGroupPrimitive.Root
     className={cn(
       "flex w-fit flex-row items-center gap-2 data-vertical:flex-col data-vertical:items-stretch",
       className,
@@ -26,7 +23,9 @@ const ChipGroup = ({
   />
 );
 
-export type ChipGroupItemProps = ComponentProps<typeof ChipGroupPrimitiveItem> &
+export type ChipGroupItemProps = ComponentProps<
+  typeof ChipGroupPrimitive.Item
+> &
   VariantProps<typeof chipVariants> & {
     icon?: false | ReactNode;
   };
@@ -38,7 +37,7 @@ const ChipGroupItem = ({
   icon = <XIcon />,
   ...props
 }: ChipGroupItemProps) => (
-  <ChipGroupPrimitiveItem
+  <ChipGroupPrimitive.Item
     className={cn(
       chipVariants({ variant, className }),
       "group/chip-group-item",
@@ -53,7 +52,7 @@ const ChipGroupItem = ({
         {icon}
       </span>
     )}
-  </ChipGroupPrimitiveItem>
+  </ChipGroupPrimitive.Item>
 );
 
 export { ChipGroup, ChipGroupItem };

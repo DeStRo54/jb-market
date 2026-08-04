@@ -4,7 +4,7 @@ export const CATALOG_FILTERS: GameFilter[] = ["discount", "dlc"];
 
 import type { GameGenre } from "@/generated/api";
 
-export const GENRES: GameGenre[] = [
+export const CATALOG_GENRES: GameGenre[] = [
   "action",
   "adventure",
   "rpg",

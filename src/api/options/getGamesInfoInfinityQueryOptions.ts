@@ -3,7 +3,6 @@ import { infiniteQueryOptions } from "@tanstack/react-query";
 import { GamesControllerGetGamesParams } from "@/generated/api";
 
 import { getGamesInfo } from "../handlers/games/info";
-import { getQueryKeysByParams } from "../helpers/getQueryKeysByParams";
 import { InfinityQuerySettings } from "../types";
 
 export const getGamesInfoInfinityQueryOptions = (
@@ -12,7 +11,7 @@ export const getGamesInfoInfinityQueryOptions = (
 ) =>
   // eslint-disable-next-line @tanstack/query/exhaustive-deps
   infiniteQueryOptions({
-    queryKey: ["getGamesInfo", ...getQueryKeysByParams(params)],
+    queryKey: ["getGamesInfo", params],
     queryFn: ({ pageParam }) =>
       getGamesInfo({
         params: {

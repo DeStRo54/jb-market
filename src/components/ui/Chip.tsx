@@ -1,9 +1,9 @@
 "use client";
 
-import { Toggle as ChipPrimitive } from "@radix-ui/react-toggle";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { XIcon } from "lucide-react";
+import { Toggle as ChipPrimitive } from "radix-ui";
 import type { ComponentProps, ReactNode } from "react";
 
 import { cn } from "@/lib/tailwind";
@@ -26,7 +26,7 @@ const chipVariants = cva(
   },
 );
 
-export type ChipProps = ComponentProps<typeof ChipPrimitive> &
+export type ChipProps = ComponentProps<typeof ChipPrimitive.Root> &
   VariantProps<typeof chipVariants> & {
     icon?: false | ReactNode;
   };
@@ -38,7 +38,7 @@ const Chip = ({
   icon = <XIcon />,
   ...props
 }: ChipProps) => (
-  <ChipPrimitive
+  <ChipPrimitive.Root
     className={cn(
       chipVariants({ variant, className }),
       "group/chip",
@@ -51,7 +51,7 @@ const Chip = ({
     {icon && (
       <span className="hidden group-data-[state=on]/chip:block">{icon}</span>
     )}
-  </ChipPrimitive>
+  </ChipPrimitive.Root>
 );
 
 export { Chip, chipVariants };

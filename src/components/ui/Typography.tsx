@@ -1,8 +1,8 @@
 "use client";
 
-import { Slot } from "@radix-ui/react-slot";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
+import { Slot } from "radix-ui";
 import type { ComponentProps } from "react";
 
 import { cn } from "@/lib/tailwind";
@@ -60,7 +60,7 @@ const Typography = <Tag extends TypographyTag>({
   pixelify = false,
   ...props
 }: TypographyProps<Tag>) => {
-  const Component = asChild ? Slot : as;
+  const Component = asChild ? Slot.Root : as;
 
   return (
     <Component

@@ -8,8 +8,8 @@ interface I18nTextProps {
   values?: ComponentProps<typeof FormattedMessage>["values"];
 }
 
-export const I18nText: React.FC<I18nTextProps> = React.memo(
-  ({ path, values }) => <FormattedMessage id={path} values={values} />,
-);
+export const I18nText = React.memo(({ path, values }: I18nTextProps) => (
+  <FormattedMessage id={path} values={values} />
+));
 
 I18nText.displayName = "I18nText";

@@ -3,7 +3,7 @@
 import { MoonIcon, SunIcon } from "lucide-react";
 import type { MouseEvent } from "react";
 
-import { useTheme } from "@/app/_contexts/theme/useTheme";
+import { useTheme } from "@/app/_contexts/theme";
 import { IconButton } from "@/components/ui/IconButton";
 
 export const ThemeButton = () => {

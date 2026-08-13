@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { Nunito } from "next/font/google";
 import type { ReactNode } from "react";
 
+import { getUserProfile } from "@/api/handlers/users/profile";
 import { Toaster } from "@/components/ui/Toaster";
 import { intl } from "@/i18n/server";
 import { cn } from "@/lib/tailwind";
@@ -25,7 +26,10 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
-export default function RootLayout({ children }: RootLayoutProps) {
+export default async function RootLayout({ children }: RootLayoutProps) {
+  const userProfileResponse = await getUserProfile().catch(() => null);
+  const user = userProfileResponse?.data.user ?? null;
+
   return (
     <html
       suppressHydrationWarning
@@ -37,7 +41,10 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <ThemeScript />
       </head>
       <body className="flex min-h-screen flex-col overflow-x-hidden">
-        <Providers intl={{ locale: intl.locale, messages: intl.messages }}>
+        <Providers
+          intl={{ locale: intl.locale, messages: intl.messages }}
+          user={user}
+        >
           <div className="content-container">{children}</div>
         </Providers>
         <Toaster />

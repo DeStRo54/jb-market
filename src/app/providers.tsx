@@ -7,16 +7,22 @@ import { IntlProvider } from "react-intl";
 import { QueryProvider } from "@/app/_contexts/query";
 import { ThemeProvider } from "@/app/_contexts/theme";
 
+import { UserState } from "./_contexts/user/UserContext";
+import { UserProvider } from "./_contexts/user/UserProvider";
+
 interface ProvidersProps {
-  children: ReactNode;
   intl: ComponentProps<typeof IntlProvider>;
+  user: UserState;
+  children: ReactNode;
 }
 
-export const Providers = ({ children, intl }: ProvidersProps) => (
+export const Providers = ({ intl, user, children }: ProvidersProps) => (
   <NuqsAdapter>
     <IntlProvider {...intl}>
       <QueryProvider>
-        <ThemeProvider>{children}</ThemeProvider>
+        <UserProvider user={user}>
+          <ThemeProvider>{children}</ThemeProvider>
+        </UserProvider>
       </QueryProvider>
     </IntlProvider>
   </NuqsAdapter>

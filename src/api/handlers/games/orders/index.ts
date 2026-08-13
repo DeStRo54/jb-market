@@ -4,5 +4,5 @@ import { FetchesRequestConfig } from "@/lib/fetches";
 
 export type GetGamesOrdersRequestConfig = FetchesRequestConfig;
 
-export const getGamesOrders = (requestConfig: GetGamesOrdersRequestConfig) =>
-  api.get<GameOrdersResponse>("/games/orders", requestConfig.config);
+export const getGamesOrders = (requestConfig?: GetGamesOrdersRequestConfig) =>
+  api.get<GameOrdersResponse>("/games/orders", requestConfig?.config);

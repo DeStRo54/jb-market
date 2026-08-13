@@ -1,7 +1,7 @@
 "use client";
 
 import { ListFilterIcon, SearchIcon, XIcon } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 import { I18nText } from "@/components/common/I18nText";
 import { Button } from "@/components/ui/Button";
@@ -41,17 +41,12 @@ export const MobileFilters = () => {
   });
 
   const form = useForm<CatalogFiltersMobileFormValues>({
-    values: {
+    defaultValues: {
       genre: state.searchParams.genre,
       showedDlc: state.searchParams.filter.includes("dlc"),
       showedDiscount: state.searchParams.filter.includes("discount"),
     },
   });
-
-  const onToggleDiscount = (checked: boolean) =>
-    form.setValue("showedDiscount", checked);
-
-  const onToggleDlc = (checked: boolean) => form.setValue("showedDlc", checked);
 
   const onGenreChange = (genre: GameGenre, checked: boolean) => {
     const currentGenres = form.getValues("genre");
@@ -109,9 +104,15 @@ export const MobileFilters = () => {
               <Typography as="span" variant="body-md">
                 <I18nText path="page.catalog.filters.discount" />
               </Typography>
-              <Switch
-                checked={form.getValues("showedDiscount")}
-                onCheckedChange={onToggleDiscount}
+              <Controller
+                control={form.control}
+                name="showedDiscount"
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
               />
             </label>
 
@@ -119,9 +120,15 @@ export const MobileFilters = () => {
               <Typography as="span" variant="body-md">
                 <I18nText path="page.catalog.filters.dlc" />
               </Typography>
-              <Switch
-                checked={form.getValues("showedDlc")}
-                onCheckedChange={onToggleDlc}
+              <Controller
+                control={form.control}
+                name="showedDlc"
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onCheckedChange={field.onChange}
+                  />
+                )}
               />
             </label>
 
@@ -144,24 +151,31 @@ export const MobileFilters = () => {
               </InputGroup>
 
               <div className="h-42 overflow-y-auto">
-                <ul className="flex flex-col gap-3">
-                  {state.visibleGenres.map((genre) => (
-                    <li key={genre}>
-                      <label className="flex items-center gap-3">
-                        <Checkbox
-                          checked={form.getValues("genre").includes(genre)}
-                          className="size-5 rounded-6 border-2 border-ring bg-background"
-                          onCheckedChange={(checked) =>
-                            onGenreChange(genre, !!checked)
-                          }
-                        />
-                        <Typography variant="caption" as="span">
-                          <I18nText path={`genre.${genre}`} />
-                        </Typography>
-                      </label>
-                    </li>
-                  ))}
-                </ul>
+                <Controller
+                  control={form.control}
+                  name="genre"
+                  render={({ field }) => (
+                    <ul className="flex flex-col gap-3">
+                      {state.visibleGenres.map((genre) => (
+                        <li key={genre}>
+                          <label className="flex items-center gap-3">
+                            <Checkbox
+                              checked={field.value.includes(genre)}
+                              className="size-5 rounded-6 border-2 border-ring bg-background"
+                              onCheckedChange={(checked) =>
+                                onGenreChange(genre, !!checked)
+                              }
+                            />
+
+                            <Typography variant="caption" as="span">
+                              <I18nText path={`genre.${genre}`} />
+                            </Typography>
+                          </label>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                />
               </div>
 
               {state.filteredGenres.length >= 5 && !state.allGenresOpened && (

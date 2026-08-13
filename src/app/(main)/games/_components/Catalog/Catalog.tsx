@@ -47,7 +47,7 @@ export const Catalog = ({ params, initialData }: CatalogProps) => {
   const games = data?.pages.flatMap((page) => page.data.games) ?? [];
 
   return (
-    <div>
+    <>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-x-4 lg:gap-y-6">
         {games.map((game) => (
           <GameCard key={game.slug} game={game} />
@@ -57,6 +57,6 @@ export const Catalog = ({ params, initialData }: CatalogProps) => {
         <CatalogSkeleton skeletonsCount={6} />
       )}
       <div ref={sentinelRef} />
-    </div>
+    </>
   );
 };

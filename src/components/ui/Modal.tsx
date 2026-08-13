@@ -23,12 +23,14 @@ export interface ModalProps {
   className?: string;
   description?: ReactNode;
   icon?: ReactNode;
+  showCloseButton?: boolean;
   title?: ReactNode;
   onOpenChange: (value: boolean) => void;
 }
 
 export const Modal = ({
   icon,
+  showCloseButton = false,
   onOpenChange,
   title,
   description,
@@ -40,7 +42,7 @@ export const Modal = ({
   if (isMobile) {
     return (
       <Drawer open onOpenChange={onOpenChange}>
-        <DrawerContent className={className}>
+        <DrawerContent showCloseButton={showCloseButton} className={className}>
           <div className="overflow-y-auto">
             {(title || description) && (
               <DrawerHeader>
@@ -62,7 +64,10 @@ export const Modal = ({
 
   return (
     <Dialog open onOpenChange={onOpenChange}>
-      <DialogContent className={cn("w-lg", className)}>
+      <DialogContent
+        showCloseButton={showCloseButton}
+        className={cn("w-lg", className)}
+      >
         {(title || description) && (
           <DialogHeader>
             {icon && <div className="p-3">{icon}</div>}

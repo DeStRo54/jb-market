@@ -22,6 +22,7 @@
   "page.catalog.filters.reset": "Сбросить фильтры",
   "page.catalog.filters.apply": "Найти",
   "page.catalog.filters.title": "Фильтры",
+
   "page.gameProduct.backToCatalog": "В каталог",
   "page.gameProduct.screenshots": "Скриншоты",
   "page.gameProduct.screenshotAlt": "Скриншот {name}",
@@ -53,6 +54,7 @@
   "page.gameProduct.delivery.nintendo_key.title": "Nintendo",
   "page.gameProduct.delivery.keySubtitle": "Ключ",
   "page.gameProduct.delivery.codeSubtitle": "Код",
+
   "region.all_world": "Весь мир",
   "region.asia": "Азия",
   "region.by": "Беларусь",
@@ -62,6 +64,7 @@
   "region.ru": "Россия",
   "region.tr": "Турция",
   "region.ua": "Украина",
+
   "genre.action": "Экшены",
   "genre.adventure": "Приключенческие игры",
   "genre.rpg": "Ролевые игры",
@@ -73,13 +76,17 @@
   "genre.racing": "Гонки",
   "genre.indie": "Инди",
   "genre.horror": "Хорроры",
+
   "deliveryType.epic_key": "Epic",
   "deliveryType.nintendo_key": "Nintendo",
   "deliveryType.playstation_key": "PlayStation",
   "deliveryType.steam_gift": "Steam Gift",
   "deliveryType.steam_key": "Steam",
   "deliveryType.xbox_key": "Xbox",
-  "paymentMethod.card": "JB Карта",
+
+  "paymentMethod.card": "Карта",
+  "paymentMethod.qr": "QR-код",
+
   "page.pay.title": "Оплата покупки",
   "page.payment.title": "Информация о покупке",
   "page.payment.serviceLabel": "Оплата сервиса",
@@ -95,6 +102,7 @@
   "page.profile.title": "Профиль",
   "page.profile.fallbackName": "Лучший покупатель",
   "page.profile.edit.title": "Редактирование данных",
+
   "field.cardNumber.label": "Номер карты*",
   "field.cardExpiry.label": "Срок*",
   "field.cardPin.label": "CVV*",
@@ -117,9 +125,11 @@
   "field.product.email.label": "Почта",
   "field.product.email.placeholder": "E-mail",
   "field.product.phone.label": "Номер телефона",
+
   "error.validation.required": "Поле обязательно",
   "error.validation.email": "Введите корректную почту",
   "error.validation.length": "Заполните поле полностью",
+
   "card.order.success": "Оплата прошла успешно",
   "card.order.steamKeyLabel": "Ваш Steam-ключ для активации",
   "card.order.region": "Регион",
@@ -127,6 +137,7 @@
   "card.order.paymentMethodLabel": "Способ оплаты",
   "card.order.paymentMethod": "JB Карта, *0000",
   "card.order.amountLabel": "Сумма",
+
   "button.pay": "Оплатить",
   "button.newCard": "Новая карта",
   "button.goToOrder": "Перейти на заказ",
@@ -141,10 +152,12 @@
   "button.profile.update": "Обновить данные",
   "button.profile.cancel": "Отмена",
   "button.product.pay": "Оплатить",
+
   "page.login.phone.title": "Авторизация",
   "page.login.phone.description": "Введите номер телефона для входа в свой профиль",
   "page.login.otp.title": "Проверочный код",
   "page.login.otp.description": "На указанный вами номер был отправлен проверочный код",
   "page.login.otp.retryCountdown": "Отправить код повторно через {seconds} секунд",
+
   "modal.logout.title": "Вы уверены, что хотите выйти из профиля?"
 }

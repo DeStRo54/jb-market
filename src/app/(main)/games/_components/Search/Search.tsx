@@ -27,6 +27,7 @@ import { GameFiltered } from "@/generated/api";
 import { cn } from "@/lib/tailwind";
 import { DYNAMIC_ROUTES } from "@/utils/constants/routes";
 import { formatMoney } from "@/utils/helpers/formatMoney";
+import { getAsset } from "@/utils/helpers/getAsset";
 import { getDiscount } from "@/utils/helpers/getDiscount";
 import { useDebounceValue } from "@/utils/hooks/useDebounceValue";
 
@@ -124,7 +125,7 @@ export const Search = () => {
                 >
                   <div className="flex flex-row gap-2 w-112.5 items-center">
                     <Image
-                      src={`/api${game.image}`}
+                      src={getAsset(game.image)}
                       alt={game.name}
                       loading="lazy"
                       width={88}

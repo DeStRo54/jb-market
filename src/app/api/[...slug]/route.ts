@@ -1,4 +1,7 @@
+import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
+
+import { COOKIES } from "@/utils/constants/cookies";
 
 async function proxy(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams.toString();
@@ -8,6 +11,13 @@ async function proxy(request: NextRequest) {
   const headers = new Headers(request.headers);
 
   headers.delete("host");
+
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIES.SESSION)?.value;
+
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
 
   const fetchOptions: RequestInit & { duplex?: "half" } = {
     method: request.method,
